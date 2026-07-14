@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JOBTracker - Marcaciones</title>
-    <!-- Font Awesome para íconos -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         /* ─── RESET & BASE ─── */
@@ -86,7 +86,7 @@
         .toolbar {
             background: white;
             border-radius: 12px;
-            padding: 15px 20px;
+            padding: 12px 20px;
             margin-bottom: 20px;
             display: flex;
             flex-wrap: wrap;
@@ -322,18 +322,169 @@
             color: #6c757d;
             font-size: 12px;
         }
-        .timeline-item .anom-icon {
-            color: #e74c3c;
-            font-size: 14px;
+
+        /* ─── USER CARDS ─── */
+        .user-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #3498db;
         }
-        .timeline-item .ok-icon {
-            color: #27ae60;
-            font-size: 14px;
+        .user-card .user-name {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
-        .timeline-item .intervalo {
+        .user-card .user-name .badge-anom {
+            background: #e74c3c;
+            color: white;
+            font-size: 10px;
+            padding: 1px 10px;
+            border-radius: 12px;
+        }
+        .user-card .user-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 13px;
             color: #6c757d;
-            font-style: italic;
+        }
+        .user-card .user-summary span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .user-card .anom-msg {
+            margin-top: 8px;
             font-size: 12px;
+            color: #e74c3c;
+            background: #fff5f5;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        /* ─── CADENA CARDS ─── */
+        .cadena-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #f39c12;
+        }
+        .cadena-card .cadena-name {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+        .cadena-card .lugar-item {
+            margin-left: 20px;
+            padding: 6px 0;
+            border-bottom: 1px solid #f1f3f5;
+            font-size: 13px;
+        }
+        .cadena-card .lugar-item:last-child {
+            border-bottom: none;
+        }
+
+        /* ─── MOCK BANNER ─── */
+        .mock-banner {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 10px 16px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #856404;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .mock-banner i {
+            font-size: 18px;
+        }
+        .mock-banner .highlight {
+            font-weight: 600;
+        }
+        .mock-banner code {
+            background: rgba(0, 0, 0, 0.08);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* ─── MODAL ─── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 440px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-box h3 {
+            margin-bottom: 16px;
+        }
+        .modal-box .field {
+            margin-bottom: 12px;
+        }
+        .modal-box .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .modal-box .field input,
+        .modal-box .field select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .modal-box .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .modal-box .actions button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .modal-box .actions .btn-cancel {
+            background: #e9ecef;
+            color: #1a1a2e;
+        }
+        .modal-box .actions .btn-confirm {
+            background: #3498db;
+            color: white;
+        }
+        .modal-box .note {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 16px;
         }
 
         /* ─── RESPONSIVE ─── */
@@ -367,60 +518,53 @@
             }
         }
 
-        /* ─── MOCK BANNER ─── */
-        .mock-banner {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 8px;
-            padding: 10px 16px;
-            margin-bottom: 16px;
-            font-size: 13px;
-            color: #856404;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        /* ─── SCROLL ─── */
+        .scrollable {
+            max-height: 600px;
+            overflow-y: auto;
         }
-        .mock-banner i {
-            font-size: 18px;
+        .scrollable::-webkit-scrollbar {
+            width: 6px;
         }
-        .mock-banner .highlight {
-            font-weight: 600;
+        .scrollable::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        .scrollable::-webkit-scrollbar-thumb {
+            background: #c1c7cd;
+            border-radius: 3px;
+        }
+        .scrollable::-webkit-scrollbar-thumb:hover {
+            background: #a0a7ae;
         }
 
-        /* ─── CARD DE USUARIO ─── */
-        .user-card {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border-left: 4px solid #3498db;
-        }
-        .user-card .user-name {
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .user-card .user-name .badge-anom {
-            background: #e74c3c;
-            color: white;
-            font-size: 10px;
-            padding: 1px 10px;
-            border-radius: 12px;
-        }
-        .user-card .user-summary {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            font-size: 13px;
+        /* ─── UTILITY ─── */
+        .text-muted {
             color: #6c757d;
         }
-        .user-card .user-summary span {
+        .text-center {
+            text-align: center;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .flex {
             display: flex;
+        }
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .items-center {
             align-items: center;
-            gap: 4px;
+        }
+        .w-full {
+            width: 100%;
         }
     </style>
 </head>
@@ -456,13 +600,13 @@
 
         <!-- ─── TOOLBAR ─── -->
         <div class="toolbar">
-            <button class="btn btn-primary" onclick="alert('En modo MOCK, la descarga CSV es simulada.')">
+            <button class="btn btn-primary" onclick="descargarCSV()">
                 <i class="fas fa-download"></i> CSV
             </button>
-            <button class="btn btn-success" onclick="alert('En modo MOCK, la descarga TXT es simulada.')">
+            <button class="btn btn-success" onclick="descargarTXT()">
                 <i class="fas fa-file-alt"></i> TXT
             </button>
-            <button class="btn btn-warning" onclick="mostrarModalAgregar()">
+            <button class="btn btn-warning" onclick="abrirModalAgregar()">
                 <i class="fas fa-plus"></i> Agregar
             </button>
             <span class="spacer"></span>
@@ -495,7 +639,7 @@
 
             <!-- TAB 1: DETALLE -->
             <div class="tab-pane active" id="tab1">
-                <div class="table-wrapper">
+                <div class="table-wrapper scrollable">
                     <table>
                         <thead>
                             <tr>
@@ -508,7 +652,7 @@
                             </tr>
                         </thead>
                         <tbody id="tablaDetalle">
-                            <tr><td colspan="6" style="text-align:center;color:#6c757d;">Cargando datos...</td></tr>
+                            <tr><td colspan="6" class="text-center text-muted">Cargando datos...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -516,48 +660,48 @@
 
             <!-- TAB 2: POR USUARIO -->
             <div class="tab-pane" id="tab2">
-                <div id="usuariosContainer">
-                    <p style="color:#6c757d;text-align:center;">Cargando...</p>
+                <div class="scrollable" id="usuariosContainer">
+                    <p class="text-center text-muted">Cargando...</p>
                 </div>
             </div>
 
             <!-- TAB 3: POR CADENA -->
             <div class="tab-pane" id="tab3">
-                <div id="cadenasContainer">
-                    <p style="color:#6c757d;text-align:center;">Cargando...</p>
+                <div class="scrollable" id="cadenasContainer">
+                    <p class="text-center text-muted">Cargando...</p>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- ─── MODAL AGREGAR (simple) ─── -->
-    <div id="modalAgregar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;">
-        <div style="background:white;border-radius:16px;padding:30px;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-            <h3 style="margin-bottom:16px;"><i class="fas fa-plus-circle" style="color:#3498db;"></i> Agregar Marcación</h3>
-            <p style="font-size:13px;color:#6c757d;margin-bottom:16px;">⚠️ En modo MOCK, los cambios no se guardan.</p>
-            <div style="margin-bottom:12px;">
-                <label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px;">Usuario</label>
-                <input id="mockUsuario" type="text" value="Usuario Demo" style="width:100%;padding:8px 12px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;">
+    <!-- ─── MODAL AGREGAR ─── -->
+    <div class="modal-overlay" id="modalAgregar">
+        <div class="modal-box">
+            <h3><i class="fas fa-plus-circle" style="color:#3498db;"></i> Agregar Marcación</h3>
+            <p class="note">⚠️ En modo MOCK, los cambios no se guardan.</p>
+            <div class="field">
+                <label>Usuario</label>
+                <input id="mockUsuario" type="text" value="Usuario Demo" />
             </div>
-            <div style="margin-bottom:12px;">
-                <label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px;">Hora</label>
-                <input id="mockHora" type="time" value="09:00" style="width:100%;padding:8px 12px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;">
+            <div class="field">
+                <label>Hora</label>
+                <input id="mockHora" type="time" value="09:00" />
             </div>
-            <div style="margin-bottom:12px;">
-                <label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px;">Lugar</label>
-                <input id="mockLugar" type="text" value="CARREFOUR" style="width:100%;padding:8px 12px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;">
+            <div class="field">
+                <label>Lugar</label>
+                <input id="mockLugar" type="text" value="CARREFOUR" />
             </div>
-            <div style="margin-bottom:20px;">
-                <label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px;">Tipo</label>
-                <select id="mockTipo" style="width:100%;padding:8px 12px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;">
+            <div class="field">
+                <label>Tipo</label>
+                <select id="mockTipo">
                     <option value="ENTRADA">ENTRADA</option>
                     <option value="SALIDA">SALIDA</option>
                 </select>
             </div>
-            <div style="display:flex;gap:10px;">
-                <button onclick="cerrarModal()" style="flex:1;padding:10px;border:1px solid #dee2e6;border-radius:8px;background:white;cursor:pointer;">Cancelar</button>
-                <button onclick="agregarMock()" style="flex:1;padding:10px;border:none;border-radius:8px;background:#3498db;color:white;cursor:pointer;font-weight:600;">
+            <div class="actions">
+                <button class="btn-cancel" onclick="cerrarModalAgregar()">Cancelar</button>
+                <button class="btn-confirm" onclick="agregarMock()">
                     <i class="fas fa-plus"></i> Agregar (Mock)
                 </button>
             </div>
@@ -566,7 +710,7 @@
 
     <script>
         // ═══════════════════════════════════════════════════════════════
-        //  MOCK DATA — JSON SIMULADO
+        //  MOCK DATA — Generado a partir de server.py
         // ═══════════════════════════════════════════════════════════════
 
         const MOCK_DATA = {
@@ -577,14 +721,14 @@
                 "n_active": 2,
                 "n_workers": 4
             },
-            "cadenas": ["CARREFOUR", "VEA", "WAL MART", "CHANGO MAS", "OTROS"],
+            "cadenas": ["CARREFOUR", "VEA", "WAL MART", "CHANGO MAS", "DIA"],
             "users": {
                 "Juan Pérez": {
                     "primer_entrada": { "hora": "08:45", "lugar": "CARREFOUR" },
                     "ultima_salida": { "hora": "17:30", "lugar": "CARREFOUR" },
-                    "total": 8,
+                    "total": 6,
                     "total_mins": 480,
-                    "has_anomalia": true,
+                    "has_anomalia": false,
                     "lugar_times": { "CARREFOUR": 240, "VEA": 60 },
                     "lugar_visits": {
                         "CARREFOUR": [
@@ -597,7 +741,7 @@
                     },
                     "timeline": [
                         { "kind": "lugar", "lugar": "CARREFOUR", "e": "08:45", "s": "12:30", "min": 225,
-                        "is_anom": false, "anom_msg": "" },
+                            "is_anom": false, "anom_msg": "" },
                         { "kind": "intervalo", "lugar": "", "e": "12:30", "s": "12:35", "min": 5, "is_anom": false,
                             "anom_msg": "" },
                         { "kind": "lugar", "lugar": "VEA", "e": "12:35", "s": "13:10", "min": 35, "is_anom": false,
@@ -605,7 +749,7 @@
                         { "kind": "intervalo", "lugar": "", "e": "13:10", "s": "13:15", "min": 5, "is_anom": false,
                             "anom_msg": "" },
                         { "kind": "lugar", "lugar": "CARREFOUR", "e": "13:15", "s": "17:30", "min": 255,
-                        "is_anom": false, "anom_msg": "" }
+                            "is_anom": false, "anom_msg": "" }
                     ],
                     "anomalias": [],
                     "rows": [
@@ -629,18 +773,19 @@
                     "total": 6,
                     "total_mins": 420,
                     "has_anomalia": true,
-                    "lugar_times": { "WAL MART": 120, "CHANGO MAS": 180 },
+                    "lugar_times": { "WAL MART": 120, "CHANGO MAS": 330 },
                     "lugar_visits": {
                         "WAL MART": [
                             { "e": "09:00", "s": "11:00", "min": 120, "id_e": 7, "id_s": 8 }
                         ],
                         "CHANGO MAS": [
-                            { "e": "12:00", "s": "15:00", "min": 180, "id_e": 9, "id_s": 10 }
+                            { "e": "12:00", "s": "15:00", "min": 180, "id_e": 9, "id_s": 10 },
+                            { "e": "15:30", "s": "18:00", "min": 150, "id_e": 11, "id_s": 12 }
                         ]
                     },
                     "timeline": [
                         { "kind": "lugar", "lugar": "WAL MART", "e": "09:00", "s": "11:00", "min": 120,
-                        "is_anom": false, "anom_msg": "" },
+                            "is_anom": false, "anom_msg": "" },
                         { "kind": "intervalo", "lugar": "", "e": "11:00", "s": "12:00", "min": 60, "is_anom": false,
                             "anom_msg": "" },
                         { "kind": "lugar", "lugar": "CHANGO MAS", "e": "12:00", "s": "15:00", "min": 180,
@@ -672,12 +817,12 @@
                     "primer_entrada": { "hora": "10:00", "lugar": "-" },
                     "ultima_salida": { "hora": "16:30", "lugar": "VEA" },
                     "total": 4,
-                    "total_mins": 120,
+                    "total_mins": 60,
                     "has_anomalia": true,
                     "lugar_times": { "VEA": 60 },
                     "lugar_visits": {
                         "VEA": [
-                            { "e": "13:30", "s": "14:30", "min": 60, "id_e": 14, "id_s": 15 }
+                            { "e": "13:30", "s": "14:30", "min": 60, "id_e": 15, "id_s": 16 }
                         ]
                     },
                     "timeline": [
@@ -816,8 +961,14 @@
 
         // ─── FUNCIONES ───
 
+        function fmtDur(minutes) {
+            const h = Math.floor(minutes / 60);
+            const m = Math.round(minutes % 60);
+            return `${h}h ${String(m).padStart(2, '0')}m`;
+        }
+
         function init() {
-            // Poblar selector de fechas
+            // Poblar selector
             const sel = document.getElementById('fechaSelector');
             sel.innerHTML = '';
             DIAS_MOCK.forEach(d => {
@@ -847,16 +998,14 @@
         }
 
         function cargarDatos() {
-            // Simular fetch con los datos mock
             currentData = JSON.parse(JSON.stringify(MOCK_DATA));
             currentData.dia = currentDia;
 
-            // Actualizar stats
+            // Stats
             document.getElementById('nWorkers').textContent = currentData.stats.n_workers;
             document.getElementById('nEntradas').textContent = currentData.stats.n_entradas;
             document.getElementById('nSalidas').textContent = currentData.stats.n_salidas;
 
-            // Contar anomalías
             let nAnom = 0;
             for (const u in currentData.users) {
                 nAnom += currentData.users[u].anomalias.length;
@@ -878,7 +1027,7 @@
             const marks = currentData.all_marks || [];
 
             if (marks.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6c757d;">No hay registros</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No hay registros</td></tr>';
                 return;
             }
 
@@ -930,31 +1079,33 @@
             const users = currentData.users || {};
 
             if (Object.keys(users).length === 0) {
-                container.innerHTML = '<p style="color:#6c757d;text-align:center;">No hay usuarios</p>';
+                container.innerHTML = '<p class="text-center text-muted">No hay usuarios</p>';
                 return;
             }
 
             let html = '';
             for (const [nombre, info] of Object.entries(users)) {
                 const hasAnom = info.has_anomalia;
+                const borderColor = hasAnom ? '#e74c3c' : '#3498db';
 
                 html += `
-                    <div class="user-card" style="${hasAnom ? 'border-left-color:#e74c3c;' : ''}">
+                    <div class="user-card" style="border-left-color:${borderColor};">
                         <div class="user-name">
                             ${nombre}
                             ${hasAnom ? '<span class="badge-anom"><i class="fas fa-exclamation-triangle"></i> Anomalías</span>' : ''}
+                            ${info.manual ? '<span class="tag tag-manual">MANUAL</span>' : ''}
                         </div>
                         <div class="user-summary">
-                            <span><i class="fas fa-sign-in-alt"></i> ${info.primer_entrada ? info.primer_entrada.hora : 'N/A'}</span>
-                            <span><i class="fas fa-sign-out-alt"></i> ${info.ultima_salida ? info.ultima_salida.hora : 'N/A'}</span>
+                            <span><i class="fas fa-sign-in-alt"></i> ${info.primer_entrada ? info.primer_entrada.hora + ' - ' + info.primer_entrada.lugar : 'N/A'}</span>
+                            <span><i class="fas fa-sign-out-alt"></i> ${info.ultima_salida ? info.ultima_salida.hora + ' - ' + info.ultima_salida.lugar : 'N/A'}</span>
                             <span><i class="fas fa-clock"></i> ${fmtDur(info.total_mins)}</span>
                             <span><i class="fas fa-tag"></i> ${info.total} registros</span>
                         </div>
-                        <div style="margin-top:8px;font-size:13px;">
+                        <div style="margin-top:8px;font-size:13px;display:flex;flex-wrap:wrap;gap:4px;">
                             ${info.timeline ? renderTimelineMini(info.timeline) : ''}
                         </div>
                         ${info.anomalias && info.anomalias.length > 0 ? `
-                            <div style="margin-top:8px;font-size:12px;color:#e74c3c;background:#fff5f5;padding:6px 12px;border-radius:6px;">
+                            <div class="anom-msg">
                                 <i class="fas fa-exclamation-circle"></i> ${info.anomalias.map(a => a.msg).join('; ')}
                             </div>
                         ` : ''}
@@ -966,23 +1117,23 @@
         }
 
         function renderTimelineMini(timeline) {
-            let html = '<div style="display:flex;flex-wrap:wrap;gap:4px;font-size:11px;color:#6c757d;">';
+            let html = '';
             timeline.forEach(item => {
                 if (item.kind === 'intervalo') {
-                    html += `<span style="background:#e9ecef;padding:1px 8px;border-radius:4px;">↕ ${item.e}→${item.s}</span>`;
+                    html +=
+                        `<span style="background:#e9ecef;padding:1px 8px;border-radius:4px;font-size:11px;color:#6c757d;">↕ ${item.e}→${item.s}</span>`;
                 } else if (item.kind === 'lugar') {
                     const color = item.is_anom ? '#e74c3c' : '#27ae60';
                     html +=
-                        `<span style="background:#e9ecef;padding:1px 8px;border-radius:4px;border-left:2px solid ${color};">${item.lugar} ${item.e}→${item.s}</span>`;
+                        `<span style="background:#e9ecef;padding:1px 8px;border-radius:4px;font-size:11px;border-left:2px solid ${color};">${item.lugar} ${item.e}→${item.s}</span>`;
                 } else if (item.kind === 'fuera') {
                     html +=
-                        `<span style="background:#f8d7da;padding:1px 8px;border-radius:4px;color:#721c24;">⚠️ Fuera ${item.e}→${item.s}</span>`;
+                        `<span style="background:#f8d7da;padding:1px 8px;border-radius:4px;font-size:11px;color:#721c24;">⚠️ Fuera ${item.e}→${item.s}</span>`;
                 } else if (item.kind === 'unpaired') {
                     html +=
-                        `<span style="background:#f8d7da;padding:1px 8px;border-radius:4px;color:#721c24;">⚠️ ${item.e || item.s} sin par</span>`;
+                        `<span style="background:#f8d7da;padding:1px 8px;border-radius:4px;font-size:11px;color:#721c24;">⚠️ ${item.e || item.s} sin par</span>`;
                 }
             });
-            html += '</div>';
             return html;
         }
 
@@ -991,15 +1142,15 @@
             const cadenaMap = currentData.cadena_map || {};
 
             if (Object.keys(cadenaMap).length === 0) {
-                container.innerHTML = '<p style="color:#6c757d;text-align:center;">No hay cadenas</p>';
+                container.innerHTML = '<p class="text-center text-muted">No hay cadenas</p>';
                 return;
             }
 
             let html = '';
             for (const [cadena, lugares] of Object.entries(cadenaMap)) {
                 html += `
-                    <div class="user-card" style="border-left-color:#f39c12;">
-                        <div class="user-name">
+                    <div class="cadena-card">
+                        <div class="cadena-name">
                             <i class="fas fa-store"></i> ${cadena}
                             <span style="font-size:12px;font-weight:400;color:#6c757d;">${Object.keys(lugares).length} lugares</span>
                         </div>
@@ -1008,9 +1159,9 @@
                     let totalMin = 0;
                     visits.forEach(v => totalMin += v.min);
                     html += `
-                        <div style="margin-left:20px;padding:6px 0;border-bottom:1px solid #f1f3f5;font-size:13px;">
+                        <div class="lugar-item">
                             <strong>${lugar}</strong>
-                            <span style="color:#6c757d;font-size:12px;">${visits.length} visitas · ${fmtDur(totalMin)}</span>
+                            <span class="text-muted" style="font-size:12px;">${visits.length} visitas · ${fmtDur(totalMin)}</span>
                             <div style="font-size:12px;color:#6c757d;margin-top:2px;">
                                 ${visits.map(v => `${v.usuario} ${v.e}→${v.s}`).join(' | ')}
                             </div>
@@ -1023,19 +1174,104 @@
             container.innerHTML = html;
         }
 
-        function fmtDur(minutes) {
-            const h = Math.floor(minutes / 60);
-            const m = Math.round(minutes % 60);
-            return `${h}h ${String(m).padStart(2,'0')}m`;
+        // ─── ACCIONES ───
+
+        function descargarCSV() {
+            const rows = [];
+            for (const u in currentData.users) {
+                currentData.users[u].rows.forEach(r => {
+                    rows.push([
+                        r.id,
+                        r.usuario,
+                        r.dia,
+                        r.hora,
+                        r.lugar,
+                        r.cadena,
+                        r.tipo,
+                        r.manual ? 'MANUAL' : 'ORIGINAL'
+                    ]);
+                });
+            }
+            let csv = '\uFEFFID,Usuario,Dia,Hora,Lugar,Cadena,Tipo,Manual\n';
+            rows.forEach(r => {
+                csv += r.join(',') + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentDia.replace(/-/g,'')}_marcaciones.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function descargarTXT() {
+            const d = new Date(currentDia + 'T00:00:00');
+            const SEP = '='.repeat(70);
+            let lines = [SEP, `  REPORTE DE MARCACIONES - ${d.toLocaleDateString('es-AR')}`, SEP, ''];
+
+            for (const [usuario, info] of Object.entries(currentData.users)) {
+                const pe = info.primer_entrada;
+                const us = info.ultima_salida;
+
+                lines.push(SEP, `USUARIO: ${usuario}`, SEP, '\n[ RESUMEN GENERAL ]');
+                lines.push(`  Primera entrada  : ${pe ? pe.hora + ' - ' + pe.lugar : 'Sin registro'}`);
+                lines.push(`  Ultima salida    : ${us ? us.hora + ' - ' + us.lugar : 'Sin registro'}`);
+                lines.push(`  Total marcaciones: ${info.total}`);
+                lines.push(`  Total horas      : ${fmtDur(info.total_mins)}`);
+                lines.push(`  Anomalias        : ${info.has_anomalia ? 'SI' : 'No'}`);
+
+                lines.push('\n[ DETALLE DE MARCACIONES ]');
+                lines.push(`  ${'LUGAR'.padEnd(40)} ${'ENTRADA'.padStart(7)}  ${'SALIDA'.padStart(7)}  DURACION`);
+                lines.push('  ' + '-'.repeat(66));
+
+                info.timeline.forEach(row => {
+                    if (row.kind === 'lugar') {
+                        const flag = row.is_anom ? '! ' : '  ';
+                        lines.push(`${flag}${row.lugar.padEnd(40)} ${String(row.e).padStart(7)}  ${String(row.s).padStart(7)}  ${fmtDur(row.min)}`);
+                        if (row.is_anom && row.anom_msg) {
+                            lines.push(`    ^ ${row.anom_msg}`);
+                        }
+                    } else if (row.kind === 'fuera') {
+                        lines.push(`! ${'FUERA DE RANGO'.padEnd(40)} ${String(row.e).padStart(7)}  ${String(row.s).padStart(7)}  ${fmtDur(row.min)}`);
+                        if (row.anom_msg) lines.push(`    ^ ${row.anom_msg}`);
+                    } else if (row.kind === 'intervalo') {
+                        lines.push(`  ${'  ~ intervalo'.padEnd(40)} ${String(row.e).padStart(7)}  ${String(row.s).padStart(7)}  ${fmtDur(row.min)}`);
+                    } else if (row.kind === 'unpaired') {
+                        const lbl = row.lugar === '-' ? 'FUERA DE RANGO' : row.lugar;
+                        const e_s = `${String(row.e || '?').padStart(7)}  ${String(row.s || '?').padStart(7)}`;
+                        lines.push(`! ${lbl.padEnd(40)} ${e_s}  (sin par)`);
+                    }
+                });
+
+                if (info.anomalias.length > 0) {
+                    lines.push('\n[ ANOMALIAS ]');
+                    info.anomalias.forEach(a => {
+                        lines.push(`  ! ${a.msg}`);
+                    });
+                }
+                lines.push('');
+            }
+
+            lines.push(SEP, 'FIN DEL REPORTE', SEP);
+            const txt = lines.join('\n');
+            const blob = new Blob([txt], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentDia.replace(/-/g,'')}_RM.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         // ─── MODAL ───
-        function mostrarModalAgregar() {
-            document.getElementById('modalAgregar').style.display = 'flex';
+
+        function abrirModalAgregar() {
+            document.getElementById('modalAgregar').classList.add('open');
         }
 
-        function cerrarModal() {
-            document.getElementById('modalAgregar').style.display = 'none';
+        function cerrarModalAgregar() {
+            document.getElementById('modalAgregar').classList.remove('open');
         }
 
         function agregarMock() {
@@ -1045,15 +1281,15 @@
             const tipo = document.getElementById('mockTipo').value;
 
             alert(`✅ Marcación agregada (MOCK):\nUsuario: ${usuario}\nHora: ${hora}\nLugar: ${lugar}\nTipo: ${tipo}\n\n⚠️ Los cambios no se guardan en modo demo.`);
-            cerrarModal();
+            cerrarModalAgregar();
         }
 
         // Cerrar modal con ESC
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') cerrarModal();
+            if (e.key === 'Escape') cerrarModalAgregar();
         });
         document.getElementById('modalAgregar').addEventListener('click', function(e) {
-            if (e.target === this) cerrarModal();
+            if (e.target === this) cerrarModalAgregar();
         });
 
         // ─── INICIAR ───
