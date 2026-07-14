@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JOBTracker - Marcaciones</title>
+    <!-- Font Awesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* ─── RESET & BASE ─── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ─── HEADER ─── */
+        .header {
+            background: linear-gradient(135deg, #1a1a2e, #2c3e50);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        .header h1 {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header h1 i {
+            color: #f1c40f;
+        }
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .header-controls label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .header-controls select {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 130px;
+        }
+        .header-controls select option {
+            background: #1a1a2e;
+            color: white;
+        }
+        .badge-mock {
+            background: #e67e22;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* ─── TOOLBAR ─── */
+        .toolbar {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .toolbar .btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            background: #e9ecef;
+            color: #1a1a2e;
+            text-decoration: none;
+        }
+        .toolbar .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .toolbar .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        .toolbar .btn-primary:hover {
+            background: #2980b9;
+        }
+        .toolbar .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        .toolbar .btn-success:hover {
+            background: #219a52;
+        }
+        .toolbar .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        .toolbar .btn-warning:hover {
+            background: #d68910;
+        }
+        .toolbar .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        .toolbar .btn-danger:hover {
+            background: #c0392b;
+        }
+        .toolbar .btn-outline {
+            background: transparent;
+            border: 1.5px solid #dee2e6;
+        }
+        .toolbar .btn-outline:hover {
+            border-color: #adb5bd;
+            background: #f8f9fa;
+        }
+        .toolbar .spacer {
+            flex: 1;
+        }
+        .toolbar .stats-badge {
+            font-size: 13px;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .toolbar .stats-badge span {
+            background: #f8f9fa;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .toolbar .stats-badge .num {
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        /* ─── TABS ─── */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: white;
+            border-radius: 12px 12px 0 0;
+            padding: 8px 8px 0 8px;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+            overflow-x: auto;
+        }
+        .tabs .tab {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6c757d;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tabs .tab:hover {
+            color: #1a1a2e;
+            background: rgba(0, 0, 0, 0.04);
+        }
+        .tabs .tab.active {
+            color: #1a1a2e;
+            background: white;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .tabs .tab .badge {
+            background: #e9ecef;
+            padding: 1px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .tabs .tab.active .badge {
+            background: #3498db;
+            color: white;
+        }
+
+        /* ─── TAB CONTENT ─── */
+        .tab-content {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            min-height: 400px;
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* ─── TABLA ─── */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        table th {
+            text-align: left;
+            padding: 12px 12px;
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f3f5;
+            vertical-align: middle;
+        }
+        table tr:hover td {
+            background: #f8f9fa;
+        }
+        table .anom {
+            background: #fff5f5;
+        }
+        table .anom td:first-child::before {
+            content: "⚠️ ";
+            font-size: 14px;
+        }
+
+        /* ─── ETIQUETAS ─── */
+        .tag {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .tag-entrada {
+            background: #d4edda;
+            color: #155724;
+        }
+        .tag-salida {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .tag-manual {
+            background: #fff3cd;
+            color: #856404;
+            font-size: 10px;
+        }
+        .tag-anomalia {
+            background: #f8d7da;
+            color: #721c24;
+            font-size: 10px;
+        }
+        .tag-cadena {
+            background: #e7f3ff;
+            color: #0066cc;
+            font-size: 11px;
+            padding: 2px 10px;
+        }
+
+        /* ─── TIMELINE ─── */
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #f1f3f5;
+            font-size: 13px;
+            gap: 12px;
+        }
+        .timeline-item .time {
+            font-weight: 600;
+            min-width: 60px;
+            color: #495057;
+        }
+        .timeline-item .place {
+            min-width: 160px;
+            color: #1a1a2e;
+        }
+        .timeline-item .dur {
+            min-width: 80px;
+            color: #6c757d;
+            font-size: 12px;
+        }
+        .timeline-item .anom-icon {
+            color: #e74c3c;
+            font-size: 14px;
+        }
+        .timeline-item .ok-icon {
+            color: #27ae60;
+            font-size: 14px;
+        }
+        .timeline-item .intervalo {
+            color: #6c757d;
+            font-style: italic;
+            font-size: 12px;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .header-controls {
+                justify-content: space-between;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar .stats-badge {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .tabs .tab {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+            table th,
+            table td {
+                padding: 8px 8px;
+                font-size: 12px;
+            }
+            .tab-content {
+                padding: 12px;
+            }
+        }
+
+        /* ─── MOCK BANNER ─── */
+        .mock-banner {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 10px 16px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #856404;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .mock-banner i {
+            font-size: 18px;
+        }
+        .mock-banner .highlight {
+            font-weight: 600;
+        }
+
+        /* ─── CARD DE USUARIO ─── */
+        .user-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #3498db;
+        }
+        .user-card .user-name {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-card .user-name .badge-anom {
+            background: #e74c3c;
+            color: white;
+            font-size: 10px;
+            padding: 1px 10px;
+            border-radius: 12px;
+        }
+        .user-card .user-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 13px;
+            color: #6c757d;
+        }
+        .user-card .user-summary span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ─── HEADER ─── -->
+        <header class="header">
+            <h1>
+                <i class="fas fa-clock"></i>
+                JOBTracker
+                <span class="badge-mock"><i class="fas fa-code-branch"></i> MOCK</span>
+            </h1>
+            <div class="header-controls">
+                <label for="fechaSelector"><i class="far fa-calendar-alt"></i> Fecha</label>
+                <select id="fechaSelector">
+                    <option value="">Cargando...</option>
+                </select>
+                <button class="btn btn-outline" style="background:rgba(255,255,255,0.1);color:white;border-color:rgba(255,255,255,0.2);" onclick="location.reload()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- ─── MOCK BANNER ─── -->
+        <div class="mock-banner">
+            <i class="fas fa-flask"></i>
+            <div>
+                <span class="highlight">Modo Demo</span> — Datos simulados para demostración.
+                Para usar con datos reales, ejecuta <code>python server.py</code> localmente.
+            </div>
+        </div>
+
+        <!-- ─── TOOLBAR ─── -->
+        <div class="toolbar">
+            <button class="btn btn-primary" onclick="alert('En modo MOCK, la descarga CSV es simulada.')">
+                <i class="fas fa-download"></i> CSV
+            </button>
+            <button class="btn btn-success" onclick="alert('En modo MOCK, la descarga TXT es simulada.')">
+                <i class="fas fa-file-alt"></i> TXT
+            </button>
+            <button class="btn btn-warning" onclick="mostrarModalAgregar()">
+                <i class="fas fa-plus"></i> Agregar
+            </button>
+            <span class="spacer"></span>
+            <div class="stats-badge" id="statsBadge">
+                <span><i class="fas fa-users"></i> <span class="num" id="nWorkers">0</span></span>
+                <span><i class="fas fa-sign-in-alt"></i> <span class="num" id="nEntradas">0</span></span>
+                <span><i class="fas fa-sign-out-alt"></i> <span class="num" id="nSalidas">0</span></span>
+                <span><i class="fas fa-exclamation-triangle" style="color:#e74c3c;"></i> <span class="num" id="nAnomalias">0</span></span>
+            </div>
+        </div>
+
+        <!-- ─── TABS ─── -->
+        <div class="tabs" id="tabs">
+            <button class="tab active" data-tab="tab1">
+                <i class="fas fa-list-ul"></i> Detalle
+                <span class="badge" id="badgeDetalle">0</span>
+            </button>
+            <button class="tab" data-tab="tab2">
+                <i class="fas fa-user"></i> Por Usuario
+                <span class="badge" id="badgeUsuarios">0</span>
+            </button>
+            <button class="tab" data-tab="tab3">
+                <i class="fas fa-store"></i> Por Cadena
+                <span class="badge" id="badgeCadenas">0</span>
+            </button>
+        </div>
+
+        <!-- ─── TAB CONTENT ─── -->
+        <div class="tab-content">
+
+            <!-- TAB 1: DETALLE -->
+            <div class="tab-pane active" id="tab1">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Hora</th>
+                                <th>Lugar</th>
+                                <th>Cadena</th>
+                                <th>Tipo</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaDetalle">
+                            <tr><td colspan="6" style="text-align:center;color:#6c757d;">Cargando datos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 2: POR USUARIO -->
+            <div class="tab-pane" id="tab2">
+                <div id="usuariosContainer">
+                    <p style="color:#6c757d;text-align:center;">Cargando...</p>
+                </div>
+            </div>
+
+            <!-- TAB 3: POR CADENA -->
+            <div class="tab-pane" id="tab3">
+                <div id="cadenasContainer">
+                    <p style="color:#6c757d;text-align:center;">Cargando...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ─── MODAL AGREGAR (simple) ─── -->
+    <div id="modalAgregar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;">
+        <div style="background:white;border-radius:16px;padding:30px;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <h3 style="margin-bottom:16px;"><i class="fas fa-plus-circle" style="color:#3498db;"></i> Agregar Marcación</h3>
+            <p style="font-size:13px;color:#6c757d;margin-bottom:16px;">⚠️ En modo MOCK, los cambios no se guardan.</p>
+            <div style="margin-bottom:12px;">
+                <label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px;">Usuario</label>
+                <input id="mockUsuario" type="text" value="Usuario Demo" style="width:100%;padding:8px 12px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;">
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px;">Hora</label>
+                <input id="mockHora" type="time" value="09:00" style="width:100%;padding:8px 12px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;">
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px;">Lugar</label>
+                <input id="mockLugar" type="text" value="CARREFOUR" style="width:100%;padding:8px 12px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px;">Tipo</label>
+                <select id="mockTipo" style="width:100%;padding:8px 12px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;">
+                    <option value="ENTRADA">ENTRADA</option>
+                    <option value="SALIDA">SALIDA</option>
+                </select>
+            </div>
+            <div style="display:flex;gap:10px;">
+                <button onclick="cerrarModal()" style="flex:1;padding:10px;border:1px solid #dee2e6;border-radius:8px;background:white;cursor:pointer;">Cancelar</button>
+                <button onclick="agregarMock()" style="flex:1;padding:10px;border:none;border-radius:8px;background:#3498db;color:white;cursor:pointer;font-weight:600;">
+                    <i class="fas fa-plus"></i> Agregar (Mock)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════
+        //  MOCK DATA — JSON SIMULADO
+        // ═══════════════════════════════════════════════════════════════
+
+        const MOCK_DATA = {
+            "dia": "2026-04-30",
+            "stats": {
+                "n_entradas": 8,
+                "n_salidas": 6,
+                "n_active": 2,
+                "n_workers": 4
+            },
+            "cadenas": ["CARREFOUR", "VEA", "WAL MART", "CHANGO MAS", "OTROS"],
+            "users": {
+                "Juan Pérez": {
+                    "primer_entrada": { "hora": "08:45", "lugar": "CARREFOUR" },
+                    "ultima_salida": { "hora": "17:30", "lugar": "CARREFOUR" },
+                    "total": 8,
+                    "total_mins": 480,
+                    "has_anomalia": true,
+                    "lugar_times": { "CARREFOUR": 240, "VEA": 60 },
+                    "lugar_visits": {
+                        "CARREFOUR": [
+                            { "e": "08:45", "s": "12:30", "min": 225, "id_e": 1, "id_s": 2 },
+                            { "e": "13:15", "s": "17:30", "min": 255, "id_e": 5, "id_s": 6 }
+                        ],
+                        "VEA": [
+                            { "e": "12:35", "s": "13:10", "min": 35, "id_e": 3, "id_s": 4 }
+                        ]
+                    },
+                    "timeline": [
+                        { "kind": "lugar", "lugar": "CARREFOUR", "e": "08:45", "s": "12:30", "min": 225,
+                        "is_anom": false, "anom_msg": "" },
+                        { "kind": "intervalo", "lugar": "", "e": "12:30", "s": "12:35", "min": 5, "is_anom": false,
+                            "anom_msg": "" },
+                        { "kind": "lugar", "lugar": "VEA", "e": "12:35", "s": "13:10", "min": 35, "is_anom": false,
+                            "anom_msg": "" },
+                        { "kind": "intervalo", "lugar": "", "e": "13:10", "s": "13:15", "min": 5, "is_anom": false,
+                            "anom_msg": "" },
+                        { "kind": "lugar", "lugar": "CARREFOUR", "e": "13:15", "s": "17:30", "min": 255,
+                        "is_anom": false, "anom_msg": "" }
+                    ],
+                    "anomalias": [],
+                    "rows": [
+                        { "id": 1, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "08:45", "lugar": "CARREFOUR",
+                            "cadena": "CARREFOUR", "tipo": "ENTRADA", "manual": 0 },
+                        { "id": 2, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "12:30", "lugar": "CARREFOUR",
+                            "cadena": "CARREFOUR", "tipo": "SALIDA", "manual": 0 },
+                        { "id": 3, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "12:35", "lugar": "VEA",
+                            "cadena": "VEA", "tipo": "ENTRADA", "manual": 0 },
+                        { "id": 4, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "13:10", "lugar": "VEA",
+                            "cadena": "VEA", "tipo": "SALIDA", "manual": 0 },
+                        { "id": 5, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "13:15", "lugar": "CARREFOUR",
+                            "cadena": "CARREFOUR", "tipo": "ENTRADA", "manual": 0 },
+                        { "id": 6, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "17:30", "lugar": "CARREFOUR",
+                            "cadena": "CARREFOUR", "tipo": "SALIDA", "manual": 0 }
+                    ]
+                },
+                "María Gómez": {
+                    "primer_entrada": { "hora": "09:00", "lugar": "WAL MART" },
+                    "ultima_salida": { "hora": "18:00", "lugar": "CHANGO MAS" },
+                    "total": 6,
+                    "total_mins": 420,
+                    "has_anomalia": true,
+                    "lugar_times": { "WAL MART": 120, "CHANGO MAS": 180 },
+                    "lugar_visits": {
+                        "WAL MART": [
+                            { "e": "09:00", "s": "11:00", "min": 120, "id_e": 7, "id_s": 8 }
+                        ],
+                        "CHANGO MAS": [
+                            { "e": "12:00", "s": "15:00", "min": 180, "id_e": 9, "id_s": 10 }
+                        ]
+                    },
+                    "timeline": [
+                        { "kind": "lugar", "lugar": "WAL MART", "e": "09:00", "s": "11:00", "min": 120,
+                        "is_anom": false, "anom_msg": "" },
+                        { "kind": "intervalo", "lugar": "", "e": "11:00", "s": "12:00", "min": 60, "is_anom": false,
+                            "anom_msg": "" },
+                        { "kind": "lugar", "lugar": "CHANGO MAS", "e": "12:00", "s": "15:00", "min": 180,
+                            "is_anom": false, "anom_msg": "" },
+                        { "kind": "intervalo", "lugar": "", "e": "15:00", "s": "15:30", "min": 30, "is_anom": false,
+                            "anom_msg": "" },
+                        { "kind": "lugar", "lugar": "CHANGO MAS", "e": "15:30", "s": "18:00", "min": 150,
+                            "is_anom": false, "anom_msg": "" }
+                    ],
+                    "anomalias": [
+                        { "msg": "SALIDA sin ENTRADA en 'WAL MART' a las 11:00", "ids": [8] }
+                    ],
+                    "rows": [
+                        { "id": 7, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "09:00",
+                            "lugar": "WAL MART", "cadena": "WAL MART", "tipo": "ENTRADA", "manual": 0 },
+                        { "id": 8, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "11:00",
+                            "lugar": "WAL MART", "cadena": "WAL MART", "tipo": "SALIDA", "manual": 0 },
+                        { "id": 9, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "12:00",
+                            "lugar": "CHANGO MAS", "cadena": "CHANGO MAS", "tipo": "ENTRADA", "manual": 0 },
+                        { "id": 10, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "15:00",
+                            "lugar": "CHANGO MAS", "cadena": "CHANGO MAS", "tipo": "SALIDA", "manual": 0 },
+                        { "id": 11, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "15:30",
+                            "lugar": "CHANGO MAS", "cadena": "CHANGO MAS", "tipo": "ENTRADA", "manual": 0 },
+                        { "id": 12, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "18:00",
+                            "lugar": "CHANGO MAS", "cadena": "CHANGO MAS", "tipo": "SALIDA", "manual": 0 }
+                    ]
+                },
+                "Carlos Rodríguez": {
+                    "primer_entrada": { "hora": "10:00", "lugar": "-" },
+                    "ultima_salida": { "hora": "16:30", "lugar": "VEA" },
+                    "total": 4,
+                    "total_mins": 120,
+                    "has_anomalia": true,
+                    "lugar_times": { "VEA": 60 },
+                    "lugar_visits": {
+                        "VEA": [
+                            { "e": "13:30", "s": "14:30", "min": 60, "id_e": 14, "id_s": 15 }
+                        ]
+                    },
+                    "timeline": [
+                        { "kind": "fuera", "lugar": "-", "e": "10:00", "s": "10:30", "min": 30, "is_anom": true,
+                            "anom_msg": "Fuera de Rango: ENTRADA 10:00 - SALIDA 10:30 (30 min)" },
+                        { "kind": "intervalo", "lugar": "", "e": "10:30", "s": "13:30", "min": 180, "is_anom": false,
+                            "anom_msg": "" },
+                        { "kind": "lugar", "lugar": "VEA", "e": "13:30", "s": "14:30", "min": 60, "is_anom": false,
+                            "anom_msg": "" },
+                        { "kind": "intervalo", "lugar": "", "e": "14:30", "s": "16:30", "min": 120, "is_anom": false,
+                            "anom_msg": "" },
+                        { "kind": "unpaired", "lugar": "VEA", "e": null, "s": "16:30", "min": 0, "is_anom": true,
+                            "anom_msg": "SALIDA sin ENTRADA en 'VEA' a las 16:30" }
+                    ],
+                    "anomalias": [
+                        { "msg": "Fuera de Rango: ENTRADA 10:00 - SALIDA 10:30 (30 min)", "ids": [13, 14] },
+                        { "msg": "SALIDA sin ENTRADA en 'VEA' a las 16:30", "ids": [16] }
+                    ],
+                    "rows": [
+                        { "id": 13, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "10:00",
+                            "lugar": "-", "cadena": "FUERA DE RANGO", "tipo": "ENTRADA", "manual": 0 },
+                        { "id": 14, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "10:30",
+                            "lugar": "-", "cadena": "FUERA DE RANGO", "tipo": "SALIDA", "manual": 0 },
+                        { "id": 15, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "13:30",
+                            "lugar": "VEA", "cadena": "VEA", "tipo": "ENTRADA", "manual": 0 },
+                        { "id": 16, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "16:30",
+                            "lugar": "VEA", "cadena": "VEA", "tipo": "SALIDA", "manual": 0 }
+                    ]
+                },
+                "Ana Fernández": {
+                    "primer_entrada": { "hora": "08:30", "lugar": "DIA" },
+                    "ultima_salida": { "hora": "12:15", "lugar": "DIA" },
+                    "total": 2,
+                    "total_mins": 35,
+                    "has_anomalia": true,
+                    "lugar_times": { "DIA": 35 },
+                    "lugar_visits": {
+                        "DIA": [
+                            { "e": "08:30", "s": "12:15", "min": 35, "id_e": 17, "id_s": 18 }
+                        ]
+                    },
+                    "timeline": [
+                        { "kind": "lugar", "lugar": "DIA", "e": "08:30", "s": "12:15", "min": 35, "is_anom": true,
+                            "anom_msg": "Marcacion < 15 min en 'DIA': ENTRADA 08:30 - SALIDA 12:15 (35 min)" }
+                    ],
+                    "anomalias": [
+                        { "msg": "Marcacion < 15 min en 'DIA': ENTRADA 08:30 - SALIDA 12:15 (35 min)", "ids": [17,
+                            18] }
+                    ],
+                    "rows": [
+                        { "id": 17, "usuario": "Ana Fernández", "dia": "2026-04-30", "hora": "08:30",
+                            "lugar": "DIA", "cadena": "DIA", "tipo": "ENTRADA", "manual": 0 },
+                        { "id": 18, "usuario": "Ana Fernández", "dia": "2026-04-30", "hora": "12:15",
+                            "lugar": "DIA", "cadena": "DIA", "tipo": "SALIDA", "manual": 0 }
+                    ]
+                }
+            },
+            "cadena_map": {
+                "CARREFOUR": {
+                    "CARREFOUR": [
+                        { "usuario": "Juan Pérez", "e": "08:45", "s": "12:30", "min": 225, "id_e": 1, "id_s": 2 },
+                        { "usuario": "Juan Pérez", "e": "13:15", "s": "17:30", "min": 255, "id_e": 5, "id_s": 6 }
+                    ]
+                },
+                "VEA": {
+                    "VEA": [
+                        { "usuario": "Juan Pérez", "e": "12:35", "s": "13:10", "min": 35, "id_e": 3, "id_s": 4 },
+                        { "usuario": "Carlos Rodríguez", "e": "13:30", "s": "14:30", "min": 60, "id_e": 15,
+                            "id_s": 16 }
+                    ]
+                },
+                "WAL MART": {
+                    "WAL MART": [
+                        { "usuario": "María Gómez", "e": "09:00", "s": "11:00", "min": 120, "id_e": 7, "id_s": 8 }
+                    ]
+                },
+                "CHANGO MAS": {
+                    "CHANGO MAS": [
+                        { "usuario": "María Gómez", "e": "12:00", "s": "15:00", "min": 180, "id_e": 9, "id_s": 10 },
+                        { "usuario": "María Gómez", "e": "15:30", "s": "18:00", "min": 150, "id_e": 11, "id_s": 12 }
+                    ]
+                },
+                "DIA": {
+                    "DIA": [
+                        { "usuario": "Ana Fernández", "e": "08:30", "s": "12:15", "min": 35, "id_e": 17,
+                        "id_s": 18 }
+                    ]
+                }
+            },
+            "all_marks": [
+                { "id": 17, "usuario": "Ana Fernández", "dia": "2026-04-30", "hora": "08:30", "lugar": "DIA",
+                    "cadena": "DIA", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+                { "id": 1, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "08:45", "lugar": "CARREFOUR",
+                    "cadena": "CARREFOUR", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+                { "id": 7, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "09:00", "lugar": "WAL MART",
+                    "cadena": "WAL MART", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+                { "id": 13, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "10:00", "lugar": "-",
+                    "cadena": "FUERA DE RANGO", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+                { "id": 14, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "10:30", "lugar": "-",
+                    "cadena": "FUERA DE RANGO", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+                { "id": 8, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "11:00", "lugar": "WAL MART",
+                    "cadena": "WAL MART", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+                { "id": 18, "usuario": "Ana Fernández", "dia": "2026-04-30", "hora": "12:15", "lugar": "DIA",
+                    "cadena": "DIA", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+                { "id": 2, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "12:30", "lugar": "CARREFOUR",
+                    "cadena": "CARREFOUR", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+                { "id": 3, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "12:35", "lugar": "VEA",
+                    "cadena": "VEA", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+                { "id": 9, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "12:00", "lugar": "CHANGO MAS",
+                    "cadena": "CHANGO MAS", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+                { "id": 4, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "13:10", "lugar": "VEA",
+                    "cadena": "VEA", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+                { "id": 5, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "13:15", "lugar": "CARREFOUR",
+                    "cadena": "CARREFOUR", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+                { "id": 15, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "13:30", "lugar": "VEA",
+                    "cadena": "VEA", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+                { "id": 10, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "15:00", "lugar": "CHANGO MAS",
+                    "cadena": "CHANGO MAS", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+                { "id": 11, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "15:30", "lugar": "CHANGO MAS",
+                    "cadena": "CHANGO MAS", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+                { "id": 16, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "16:30", "lugar": "VEA",
+                    "cadena": "VEA", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+                { "id": 6, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "17:30", "lugar": "CARREFOUR",
+                    "cadena": "CARREFOUR", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+                { "id": 12, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "18:00", "lugar": "CHANGO MAS",
+                    "cadena": "CHANGO MAS", "tipo": "SALIDA", "manual": 0, "kind": "marca" }
+            ]
+        };
+
+        // ─── LISTA DE DÍAS ───
+        const DIAS_MOCK = ["2026-04-30", "2026-04-29", "2026-04-28"];
+
+        // ─── ESTADO ───
+        let currentData = null;
+        let currentDia = "2026-04-30";
+
+        // ─── FUNCIONES ───
+
+        function init() {
+            // Poblar selector de fechas
+            const sel = document.getElementById('fechaSelector');
+            sel.innerHTML = '';
+            DIAS_MOCK.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d;
+                sel.appendChild(opt);
+            });
+            sel.value = currentDia;
+
+            sel.addEventListener('change', function() {
+                currentDia = this.value;
+                cargarDatos();
+            });
+
+            // Tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                    document.getElementById(this.dataset.tab).classList.add('active');
+                });
+            });
+
+            cargarDatos();
+        }
+
+        function cargarDatos() {
+            // Simular fetch con los datos mock
+            currentData = JSON.parse(JSON.stringify(MOCK_DATA));
+            currentData.dia = currentDia;
+
+            // Actualizar stats
+            document.getElementById('nWorkers').textContent = currentData.stats.n_workers;
+            document.getElementById('nEntradas').textContent = currentData.stats.n_entradas;
+            document.getElementById('nSalidas').textContent = currentData.stats.n_salidas;
+
+            // Contar anomalías
+            let nAnom = 0;
+            for (const u in currentData.users) {
+                nAnom += currentData.users[u].anomalias.length;
+            }
+            document.getElementById('nAnomalias').textContent = nAnom;
+
+            // Badges
+            document.getElementById('badgeDetalle').textContent = currentData.all_marks.length;
+            document.getElementById('badgeUsuarios').textContent = Object.keys(currentData.users).length;
+            document.getElementById('badgeCadenas').textContent = Object.keys(currentData.cadena_map).length;
+
+            renderTablaDetalle();
+            renderUsuarios();
+            renderCadenas();
+        }
+
+        function renderTablaDetalle() {
+            const tbody = document.getElementById('tablaDetalle');
+            const marks = currentData.all_marks || [];
+
+            if (marks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#6c757d;">No hay registros</td></tr>';
+                return;
+            }
+
+            let html = '';
+            marks.forEach(m => {
+                const isAnom = m.lugar === '-' || m.lugar === 'INTERVALO' || m.kind === 'intervalo';
+                const isIntervalo = m.kind === 'intervalo';
+                const rowClass = isAnom && !isIntervalo ? 'anom' : '';
+
+                let tipoTag = '';
+                if (isIntervalo) {
+                    tipoTag = '<span class="tag" style="background:#e9ecef;color:#6c757d;">INTERVALO</span>';
+                } else if (m.tipo === 'ENTRADA') {
+                    tipoTag = '<span class="tag tag-entrada">ENTRADA</span>';
+                } else {
+                    tipoTag = '<span class="tag tag-salida">SALIDA</span>';
+                }
+
+                let estadoTag = '';
+                if (isIntervalo) {
+                    estadoTag = `<span style="font-size:12px;color:#6c757d;">${Math.round(m.min)} min</span>`;
+                } else if (m.lugar === '-') {
+                    estadoTag = '<span class="tag tag-anomalia"><i class="fas fa-exclamation-triangle"></i> Fuera</span>';
+                } else if (isAnom) {
+                    estadoTag = '<span class="tag tag-anomalia"><i class="fas fa-exclamation-triangle"></i> Anomalía</span>';
+                } else {
+                    estadoTag = '<span class="tag" style="background:#d4edda;color:#155724;"><i class="fas fa-check"></i> OK</span>';
+                }
+
+                const lugarDisplay = isIntervalo ? '🔄 INTERVALO' : (m.lugar || '-');
+
+                html += `
+                    <tr class="${rowClass}">
+                        <td><strong>${m.usuario}</strong></td>
+                        <td>${m.hora}${m.hora_s ? ` → ${m.hora_s}` : ''}</td>
+                        <td>${lugarDisplay}</td>
+                        <td>${m.cadena || '-'}</td>
+                        <td>${tipoTag}</td>
+                        <td>${estadoTag}</td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function renderUsuarios() {
+            const container = document.getElementById('usuariosContainer');
+            const users = currentData.users || {};
+
+            if (Object.keys(users).length === 0) {
+                container.innerHTML = '<p style="color:#6c757d;text-align:center;">No hay usuarios</p>';
+                return;
+            }
+
+            let html = '';
+            for (const [nombre, info] of Object.entries(users)) {
+                const hasAnom = info.has_anomalia;
+
+                html += `
+                    <div class="user-card" style="${hasAnom ? 'border-left-color:#e74c3c;' : ''}">
+                        <div class="user-name">
+                            ${nombre}
+                            ${hasAnom ? '<span class="badge-anom"><i class="fas fa-exclamation-triangle"></i> Anomalías</span>' : ''}
+                        </div>
+                        <div class="user-summary">
+                            <span><i class="fas fa-sign-in-alt"></i> ${info.primer_entrada ? info.primer_entrada.hora : 'N/A'}</span>
+                            <span><i class="fas fa-sign-out-alt"></i> ${info.ultima_salida ? info.ultima_salida.hora : 'N/A'}</span>
+                            <span><i class="fas fa-clock"></i> ${fmtDur(info.total_mins)}</span>
+                            <span><i class="fas fa-tag"></i> ${info.total} registros</span>
+                        </div>
+                        <div style="margin-top:8px;font-size:13px;">
+                            ${info.timeline ? renderTimelineMini(info.timeline) : ''}
+                        </div>
+                        ${info.anomalias && info.anomalias.length > 0 ? `
+                            <div style="margin-top:8px;font-size:12px;color:#e74c3c;background:#fff5f5;padding:6px 12px;border-radius:6px;">
+                                <i class="fas fa-exclamation-circle"></i> ${info.anomalias.map(a => a.msg).join('; ')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function renderTimelineMini(timeline) {
+            let html = '<div style="display:flex;flex-wrap:wrap;gap:4px;font-size:11px;color:#6c757d;">';
+            timeline.forEach(item => {
+                if (item.kind === 'intervalo') {
+                    html += `<span style="background:#e9ecef;padding:1px 8px;border-radius:4px;">↕ ${item.e}→${item.s}</span>`;
+                } else if (item.kind === 'lugar') {
+                    const color = item.is_anom ? '#e74c3c' : '#27ae60';
+                    html +=
+                        `<span style="background:#e9ecef;padding:1px 8px;border-radius:4px;border-left:2px solid ${color};">${item.lugar} ${item.e}→${item.s}</span>`;
+                } else if (item.kind === 'fuera') {
+                    html +=
+                        `<span style="background:#f8d7da;padding:1px 8px;border-radius:4px;color:#721c24;">⚠️ Fuera ${item.e}→${item.s}</span>`;
+                } else if (item.kind === 'unpaired') {
+                    html +=
+                        `<span style="background:#f8d7da;padding:1px 8px;border-radius:4px;color:#721c24;">⚠️ ${item.e || item.s} sin par</span>`;
+                }
+            });
+            html += '</div>';
+            return html;
+        }
+
+        function renderCadenas() {
+            const container = document.getElementById('cadenasContainer');
+            const cadenaMap = currentData.cadena_map || {};
+
+            if (Object.keys(cadenaMap).length === 0) {
+                container.innerHTML = '<p style="color:#6c757d;text-align:center;">No hay cadenas</p>';
+                return;
+            }
+
+            let html = '';
+            for (const [cadena, lugares] of Object.entries(cadenaMap)) {
+                html += `
+                    <div class="user-card" style="border-left-color:#f39c12;">
+                        <div class="user-name">
+                            <i class="fas fa-store"></i> ${cadena}
+                            <span style="font-size:12px;font-weight:400;color:#6c757d;">${Object.keys(lugares).length} lugares</span>
+                        </div>
+                `;
+                for (const [lugar, visits] of Object.entries(lugares)) {
+                    let totalMin = 0;
+                    visits.forEach(v => totalMin += v.min);
+                    html += `
+                        <div style="margin-left:20px;padding:6px 0;border-bottom:1px solid #f1f3f5;font-size:13px;">
+                            <strong>${lugar}</strong>
+                            <span style="color:#6c757d;font-size:12px;">${visits.length} visitas · ${fmtDur(totalMin)}</span>
+                            <div style="font-size:12px;color:#6c757d;margin-top:2px;">
+                                ${visits.map(v => `${v.usuario} ${v.e}→${v.s}`).join(' | ')}
+                            </div>
+                        </div>
+                    `;
+                }
+                html += '</div>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        function fmtDur(minutes) {
+            const h = Math.floor(minutes / 60);
+            const m = Math.round(minutes % 60);
+            return `${h}h ${String(m).padStart(2,'0')}m`;
+        }
+
+        // ─── MODAL ───
+        function mostrarModalAgregar() {
+            document.getElementById('modalAgregar').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalAgregar').style.display = 'none';
+        }
+
+        function agregarMock() {
+            const usuario = document.getElementById('mockUsuario').value || 'Usuario Demo';
+            const hora = document.getElementById('mockHora').value || '09:00';
+            const lugar = document.getElementById('mockLugar').value || 'CARREFOUR';
+            const tipo = document.getElementById('mockTipo').value;
+
+            alert(`✅ Marcación agregada (MOCK):\nUsuario: ${usuario}\nHora: ${hora}\nLugar: ${lugar}\nTipo: ${tipo}\n\n⚠️ Los cambios no se guardan en modo demo.`);
+            cerrarModal();
+        }
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') cerrarModal();
+        });
+        document.getElementById('modalAgregar').addEventListener('click', function(e) {
+            if (e.target === this) cerrarModal();
+        });
+
+        // ─── INICIAR ───
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+</body>
+</html>
