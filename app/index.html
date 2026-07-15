@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="https://unpkg.com/lucide@latest"></script>
+<title>JOBTrack</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#100f0f;--bg2:#1c1b1a;--bg3:#282726;
+  --ui1:#343331;--ui2:#403e3c;--ui3:#575653;
+  --tx3:#6f6e69;--tx2:#878580;--tx1:#cecdc3;--tx:#fffcf0;
+  --red:#d14d41;--orange:#da702c;--yellow:#d0a215;
+  --green:#879a39;--cyan:#3aa99f;--blue:#4385be;
+  --purple:#8b7ec8;--magenta:#ce5d97;
+  --F:'JetBrains Mono','Courier New',monospace;
+}
+body{background:var(--bg);color:var(--tx1);font-family:var(--F);font-size:15px;line-height:1.6;min-height:100vh}
+
+/* HEADER */
+.hdr{padding:20px 36px 14px;border-bottom:1px solid var(--ui2);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.prompt{color:var(--green);font-weight:700;font-size:13px}
+.hdr h1{color:var(--tx);font-size:20px;font-weight:700}
+.hdr-date{color:var(--tx3);font-size:14px}
+.cursor{display:inline-block;width:9px;height:17px;background:var(--cyan);margin-left:4px;animation:blink 1.1s step-end infinite;vertical-align:text-bottom}
+@keyframes blink{50%{opacity:0}}
+.hdr-spacer{flex:1}
+
+/* MOCK BANNER */
+.mock-banner{background:rgba(208,162,21,.12);border:1px solid var(--yellow);border-radius:4px;padding:8px 18px;margin:10px 36px 0;font-size:12px;color:var(--yellow);display:flex;align-items:center;gap:12px}
+.mock-banner i{font-size:16px}
+.mock-banner .hl{font-weight:700;color:var(--cyan)}
+
+/* PERIOD SELECTOR */
+.period-bar{padding:10px 36px;background:var(--bg3);border-bottom:1px solid var(--ui2);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.period-bar label{color:var(--tx3);font-size:11px;letter-spacing:1px;text-transform:uppercase}
+.period-bar select,.period-bar input[type=date]{background:var(--bg);border:1px solid var(--ui3);color:var(--tx1);padding:6px 10px;font-family:var(--F);font-size:13px;outline:none;transition:border-color .2s}
+.period-bar select:focus,.period-bar input:focus{border-color:var(--cyan)}
+.period-bar select option{background:var(--bg2)}
+.pbtn{background:transparent;border:1px solid var(--ui3);color:var(--tx2);padding:6px 14px;cursor:pointer;font-family:var(--F);font-size:12px;transition:all .15s}
+.pbtn:hover{border-color:var(--cyan);color:var(--cyan)}
+.period-mode{display:flex;gap:6px}
+.period-mode .pbtn.active{border-color:var(--cyan);color:var(--cyan)}
+#range-fields{display:none;align-items:center;gap:10px}
+#range-fields.show{display:flex}
+.csv-btn{margin-left:auto;background:transparent;border:1px solid var(--green);color:var(--green);padding:6px 14px;cursor:pointer;font-family:var(--F);font-size:12px;transition:all .15s}
+.csv-btn:hover{background:var(--green);color:#000}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--ui2);background:var(--bg2);padding:0 36px}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--tx3);font-family:var(--F);font-size:13px;padding:11px 18px;cursor:pointer;transition:all .15s;white-space:nowrap;margin-bottom:-1px}
+.tab-btn:hover{color:var(--tx2)}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* TOOLBAR */
+.toolbar{padding:10px 36px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--bg2);border-bottom:1px solid var(--ui2)}
+.toolbar input,.toolbar select{background:var(--bg);border:1px solid var(--ui3);color:var(--tx);padding:7px 11px;font-family:var(--F);font-size:13px;outline:none;transition:border-color .2s}
+.toolbar input{flex:1;min-width:180px;max-width:340px}
+.toolbar input::placeholder{color:var(--tx3)}
+.toolbar input:focus,.toolbar select:focus{border-color:var(--cyan)}
+.toolbar select option{background:var(--bg2)}
+.fbtn{background:transparent;border:1px solid var(--ui3);color:var(--tx2);padding:6px 13px;cursor:pointer;font-family:var(--F);font-size:12px;transition:all .15s;white-space:nowrap}
+.fbtn:hover{border-color:var(--tx2);color:var(--tx)}
+.fbtn.active{border-color:var(--cyan);color:var(--cyan)}
+.badge{margin-left:auto;font-size:12px;color:var(--tx3)}
+
+/* STATS BAR */
+.stats-bar{padding:10px 36px;display:flex;gap:28px;background:var(--bg3);border-bottom:1px solid var(--ui1);flex-wrap:wrap}
+.stat{display:flex;flex-direction:column;gap:1px}
+.sv{font-size:18px;font-weight:700;color:var(--cyan)}
+.sl{font-size:10px;color:var(--tx3);letter-spacing:1px;text-transform:uppercase}
+.sv.red{color:var(--red)}.sv.green{color:var(--green)}.sv.ora{color:var(--orange)}
+
+/* TABLE */
+.twrap{overflow-x:auto;padding:0 36px 50px}
+table{width:100%;border-collapse:collapse;margin-top:14px}
+thead tr{border-bottom:1px solid var(--ui3)}
+th{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);padding:9px 13px;text-align:left;cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{color:var(--tx2)}
+.sa{margin-left:3px;color:var(--cyan)}
+td{padding:9px 13px;border-bottom:1px solid var(--ui1);vertical-align:top;line-height:1.5;font-size:14px}
+.dr,.dr2{cursor:pointer;transition:background .1s}
+.dr:hover,.dr2:hover{background:var(--bg2)}
+.dr:hover .tdu{color:var(--cyan)}
+.tdu{color:var(--blue);font-weight:700;font-size:13px;white-space:nowrap;transition:color .1s}
+.tdu2{color:var(--blue);font-size:13px}
+.tth{color:var(--yellow);font-weight:700;margin-right:5px}
+.td-anom{text-align:center}
+.ap{display:inline-block;color:var(--red);font-size:18px;line-height:1}
+.ok-sym{color:var(--green);font-size:16px}
+.td-ok{color:var(--ui3);text-align:center}
+.tdc{text-align:center;color:var(--tx2)}
+.td-hrs{color:var(--cyan);font-weight:700;text-align:center;white-space:nowrap}
+.td-lug{color:var(--tx3);font-size:13px}
+.ld{color:var(--tx3);font-size:12px}
+.td-cad{color:var(--purple);font-size:12px}
+.te{color:var(--green);font-weight:700}
+.ts{color:var(--orange);font-weight:700}
+.fuera{color:var(--yellow);font-style:italic}
+.cell-time{display:block;color:var(--yellow);font-weight:700;white-space:nowrap}
+.cell-place{display:block;color:var(--tx2);font-size:12px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+@media(max-width:900px){.lug-full{display:none}.lug-count{display:inline!important}}
+@media(min-width:901px){.lug-full{display:inline}.lug-count{display:none!important}}
+.lug-count{display:none;color:var(--cyan);font-weight:700}
+.manual-dot{color:var(--magenta);margin-right:3px;font-size:11px}
+.hidden{display:none!important}
+
+/* TAB3 cadenas */
+.tab3w{padding:20px 36px 50px}
+.cblock{margin-bottom:28px}
+.ctitle{font-size:12px;font-weight:700;letter-spacing:1.5px;color:var(--cyan);margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--ui2)}
+.lsec{margin:0 0 14px 10px}
+.lhead{color:var(--yellow);font-size:13px;font-weight:700;margin-bottom:5px}
+.lrow{display:flex;align-items:center;gap:10px;padding:4px 0;border-bottom:1px solid var(--ui1);flex-wrap:wrap}
+.lu{color:var(--blue);min-width:240px;font-size:13px}
+.ltimes{display:flex;gap:7px;align-items:center;font-size:13px}
+.ve{color:var(--green)}.vs{color:var(--orange)}.var{color:var(--ui3)}.vd{color:var(--tx3);font-size:12px}
+
+/* MODAL (detail) */
+.overlay{position:fixed;inset:0;background:rgba(16,15,15,.88);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--ui3);width:100%;max-width:780px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
+.mhdr{display:flex;justify-content:space-between;align-items:center;padding:13px 22px;border-bottom:1px solid var(--ui2);background:var(--bg3);position:sticky;top:0;z-index:1}
+.mtitle{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3)}
+.xbtn{background:none;border:1px solid var(--ui2);color:var(--tx3);font-family:var(--F);font-size:15px;cursor:pointer;padding:2px 7px;transition:all .15s;line-height:1}
+.xbtn:hover{border-color:var(--red);color:var(--red)}
+.mbody{padding:22px 26px}
+
+/* DETAIL */
+.det-title{font-size:15px;font-weight:700;color:var(--cyan);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--ui2)}
+.det-sec{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--tx3);margin:16px 0 8px;text-transform:uppercase}
+.kv{display:flex;gap:14px;padding:5px 0;border-bottom:1px solid var(--ui1);align-items:baseline}
+.kl{color:var(--tx3);min-width:190px;flex-shrink:0;font-size:13px}
+.kv-v{color:var(--tx1);font-size:14px}
+.kv-entry .kv-v{color:var(--green);font-weight:700}
+.kv-exit  .kv-v{color:var(--orange);font-weight:700}
+.kv-hrs   .kv-v{color:var(--cyan);font-weight:700}
+.lblock{margin:4px 0 10px;padding-left:8px;border-left:2px solid var(--ui2)}
+.lname{color:var(--yellow);font-weight:700;font-size:14px;margin-bottom:3px}
+.ltot{color:var(--cyan);font-size:13px;margin-left:8px}
+.lvisit{display:flex;gap:8px;align-items:center;padding:3px 0;font-size:13px;color:var(--tx2)}
+.det-fuera{color:var(--yellow);font-size:14px;padding:5px 0;border-bottom:1px solid var(--ui1)}
+.det-fuera .dd{color:var(--tx3);font-size:13px}
+.anom-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--ui1)}
+.anom-txt{color:var(--red);font-size:13px;flex:1;cursor:pointer}
+.anom-txt:hover{color:var(--orange);text-decoration:underline}
+.det-ok{color:var(--green);font-size:14px;padding:5px 0}
+
+/* EDITOR MODAL */
+.ed-overlay{position:fixed;inset:0;background:rgba(16,15,15,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.ed-overlay.open{display:flex}
+.ed-modal{background:var(--bg2);border:1px solid var(--ui3);width:100%;max-width:700px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
+.ed-hdr{display:flex;justify-content:space-between;align-items:center;padding:13px 22px;border-bottom:1px solid var(--ui2);background:var(--bg3);position:sticky;top:0;z-index:1}
+.ed-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow)}
+.ed-body{padding:20px 24px}
+.ed-user{font-size:14px;color:var(--cyan);font-weight:700;margin-bottom:4px}
+.ed-anom{font-size:13px;color:var(--red);margin-bottom:16px;padding:8px;background:rgba(209,77,65,.1);border-left:2px solid var(--red)}
+.ed-table{width:100%;border-collapse:collapse;margin-bottom:16px}
+.ed-table th{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);padding:7px 10px;text-align:left;border-bottom:1px solid var(--ui3)}
+.ed-table td{padding:6px 8px;border-bottom:1px solid var(--ui1);vertical-align:middle}
+.ed-row.highlighted{background:rgba(208,162,21,.08);border-left:2px solid var(--yellow)}
+.ed-row.manual-row{background:rgba(206,93,151,.06)}
+.ed-input{background:var(--bg);border:1px solid var(--ui3);color:var(--tx);padding:5px 8px;font-family:var(--F);font-size:13px;outline:none;width:100%}
+.ed-input:focus{border-color:var(--cyan)}
+.ed-sel{background:var(--bg);border:1px solid var(--ui3);color:var(--tx);padding:5px 8px;font-family:var(--F);font-size:13px;outline:none;width:100%}
+.ed-sel option{background:var(--bg2)}
+.icon-btn{background:none;border:none;cursor:pointer;font-size:14px;padding:3px 6px;transition:opacity .15s}
+.icon-btn:hover{opacity:.7}
+.del-btn{color:var(--red)}
+.save-btn{color:var(--green)}
+.ed-actions{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.add-row-btn{background:transparent;border:1px solid var(--green);color:var(--green);padding:7px 14px;cursor:pointer;font-family:var(--F);font-size:12px;transition:all .15s}
+.add-row-btn:hover{background:var(--green);color:#000}
+.save-all-btn{background:transparent;border:1px solid var(--cyan);color:var(--cyan);padding:7px 14px;cursor:pointer;font-family:var(--F);font-size:12px;transition:all .15s}
+.save-all-btn:hover{background:var(--cyan);color:#000}
+.ed-note{font-size:11px;color:var(--tx3)}
+.manual-badge{display:inline-block;font-size:10px;color:var(--magenta);border:1px solid var(--magenta);padding:1px 5px;margin-left:4px}
+
+/* TIMELINE TABLE */
+.tl-table{width:100%;border-collapse:collapse;margin:6px 0 14px;font-size:13px}
+.tl-table thead tr{border-bottom:1px solid var(--ui3)}
+.tl-table th{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tx3);padding:7px 10px;text-align:left}
+.tl-table td{padding:7px 10px;border-bottom:1px solid var(--ui1);vertical-align:middle}
+.tl-row-lugar td{color:var(--tx1)}
+.tl-row-lugar:hover td{background:rgba(255,255,255,.03)}
+.tl-row-anom td{background:rgba(209,77,65,.07)}
+.tl-row-anom:hover td{background:rgba(209,77,65,.13)}
+.tl-row-fuera td{background:rgba(209,77,65,.07)}
+.tl-row-fuera:hover td{background:rgba(209,77,65,.13)}
+.tl-row-intervalo td{color:var(--tx3);font-style:italic;background:rgba(135,154,57,.05)}
+.tl-row-intervalo:hover td{background:rgba(135,154,57,.1)}
+.tl-anom-flag{color:var(--red);font-weight:700;margin-right:4px}
+.tl-int-lbl{color:var(--tx3);font-size:12px}
+.tl-e{color:var(--green);font-weight:700;white-space:nowrap}
+.tl-s{color:var(--orange);font-weight:700;white-space:nowrap}
+.tl-d{color:var(--tx2);font-size:12px;white-space:nowrap}
+.tl-unpaired{color:var(--red);font-size:12px}
+/* BADGES */
+.anom-badge{display:inline-block;font-size:11px;font-weight:700;color:var(--red);border:1px solid rgba(209,77,65,.4);background:rgba(209,77,65,.1);padding:2px 8px;margin-left:8px;vertical-align:middle}
+.ok-badge{display:inline-block;font-size:11px;font-weight:700;color:var(--green);border:1px solid rgba(135,154,57,.4);background:rgba(135,154,57,.1);padding:2px 8px;margin-left:8px;vertical-align:middle}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--ui3)}
+::-webkit-scrollbar-thumb:hover{background:var(--tx3)}
+
+/* ─── RESPONSIVE: A PARTIR DE 930px SOLO NOMBRE Y ANOMALIAS ─── */
+@media (max-width: 930px) {
+  /* Ocultar columnas en el HEADER de TAB 1 */
+  #t1 thead th:nth-child(2),
+  #t1 thead th:nth-child(3),
+  #t1 thead th:nth-child(4),
+  #t1 thead th:nth-child(6),
+  #t1 thead th:nth-child(7) {
+    display: none !important;
+  }
+
+  /* Ocultar columnas en el BODY de TAB 1 */
+  #t1-body td:nth-child(2),
+  #t1-body td:nth-child(3),
+  #t1-body td:nth-child(4),
+  #t1-body td:nth-child(6),
+  #t1-body td:nth-child(7) {
+    display: none !important;
+  }
+
+  /* Mantener visibles: usuario (col 1) y anomalías (col 5) */
+  #t1 thead th:nth-child(1),
+  #t1 thead th:nth-child(5) {
+    display: table-cell !important;
+  }
+  #t1-body td:nth-child(1),
+  #t1-body td:nth-child(5) {
+    display: table-cell !important;
+  }
+
+  /* Ajustes para el nombre */
+  #t1-body .tdu {
+    font-size: 14px;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  /* Anomalías más grandes */
+  #t1-body .ap {
+    font-size: 22px !important;
+  }
+  #t1-body .ok-sym {
+    font-size: 20px !important;
+  }
+
+  /* Ajustes generales de padding */
+  .hdr {
+    padding: 16px 20px 10px;
+    gap: 10px;
+  }
+  .hdr h1 {
+    font-size: 18px;
+  }
+  .period-bar {
+    padding: 8px 20px;
+  }
+  .twrap {
+    padding: 0 20px 30px;
+    overflow-x: auto;
+  }
+  table {
+    font-size: 13px;
+  }
+  th {
+    font-size: 9px;
+    padding: 6px 10px;
+  }
+  td {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
+
+/* ─── RESPONSIVE PARA MÓVILES (≤ 480px) ─── */
+@media (max-width: 480px) {
+  .hdr {
+    padding: 12px 12px 8px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .hdr h1 {
+    font-size: 15px;
+  }
+  .prompt {
+    font-size: 11px;
+  }
+  .hdr-date {
+    font-size: 10px;
+  }
+  .cursor {
+    height: 12px;
+    width: 6px;
+  }
+  .csv-btn {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+  .period-bar {
+    padding: 6px 12px;
+    gap: 6px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .period-mode {
+    justify-content: center;
+  }
+  .period-bar select,
+  .period-bar input[type=date] {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+  .pbtn {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+  #range-fields {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #range-fields input {
+    max-width: 120px;
+  }
+  .tabs {
+    padding: 0 10px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    font-size: 11px;
+    padding: 7px 10px;
+  }
+  .toolbar {
+    padding: 6px 12px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .toolbar input {
+    font-size: 12px;
+    padding: 5px 8px;
+    min-width: unset;
+    max-width: 100%;
+  }
+  .fbtn {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+  .badge {
+    font-size: 10px;
+    margin-left: 0;
+    text-align: center;
+    padding-top: 4px;
+  }
+  .stats-bar {
+    padding: 6px 12px;
+    gap: 10px;
+    justify-content: center;
+  }
+  .stat {
+    align-items: center;
+  }
+  .sv {
+    font-size: 13px;
+  }
+  .sl {
+    font-size: 8px;
+  }
+  .twrap {
+    padding: 0 12px 20px;
+    overflow-x: auto;
+  }
+  table {
+    font-size: 12px;
+  }
+  th {
+    font-size: 8px;
+    padding: 4px 6px;
+  }
+  td {
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+  #t1-body .tdu {
+    font-size: 13px;
+  }
+  #t1-body .ap {
+    font-size: 20px !important;
+  }
+  #t1-body .ok-sym {
+    font-size: 18px !important;
+  }
+  #t2 thead th:nth-child(5),
+  #t2-body td:nth-child(5) {
+    display: none !important;
+  }
+  #t2from,
+  #t2to {
+    max-width: 80px !important;
+    font-size: 11px !important;
+    padding: 4px 6px !important;
+  }
+  .tab3w {
+    padding: 10px 12px 20px;
+  }
+  .ctitle {
+    font-size: 11px;
+  }
+  .lhead {
+    font-size: 12px;
+  }
+  .lu {
+    min-width: 100px;
+    font-size: 11px;
+  }
+  .ltimes {
+    font-size: 11px;
+    flex-wrap: wrap;
+  }
+  .lrow {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .modal {
+    max-width: 95%;
+    max-height: 95vh;
+  }
+  .mbody {
+    padding: 12px 14px;
+  }
+  .kl {
+    min-width: 120px;
+    font-size: 12px;
+  }
+  .kv-v {
+    font-size: 13px;
+  }
+  .tl-table {
+    font-size: 11px;
+  }
+  .tl-table th {
+    font-size: 8px;
+    padding: 3px 4px;
+  }
+  .tl-table td {
+    padding: 3px 4px;
+    font-size: 11px;
+  }
+  .mock-banner {
+    margin: 6px 12px 0;
+    font-size: 10px;
+    padding: 4px 10px;
+    flex-wrap: wrap;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <i data-lucide="id-card" style="color:var(--cyan);width:22px;height:22px;display:inline-block;"></i>
+  <h1>JOBTrack</h1>
+  <span class="hdr-date" id="hdr-date">// control de marcaciones</span>
+  <div class="hdr-spacer"></div>
+  <button class="csv-btn" onclick="downloadTXT()" style="border-color:var(--purple);color:var(--purple)">↓ exportar txt</button>
+  <button class="csv-btn" onclick="downloadCSV()">↓ exportar csv</button>
+</div>
+
+<!-- MOCK BANNER -->
+<div class="mock-banner">
+  <i>⚡</i>
+  <span><span class="hl">MODO DEMO</span> — Datos simulados para GitHub Pages.</span>
+</div>
+
+<!-- PERIOD BAR -->
+<div class="period-bar">
+  <label>periodo</label>
+  <div class="period-mode">
+    <button class="pbtn active" id="pm-day"   onclick="setPeriodMode('day')">dia</button>
+    <button class="pbtn"        id="pm-range"  onclick="setPeriodMode('range')">rango</button>
+  </div>
+  <select id="day-select" onchange="loadDay(this.value)"></select>
+  <div id="range-fields">
+    <label>desde</label>
+    <input type="date" id="r-from" onchange="loadRange()">
+    <label>hasta</label>
+    <input type="date" id="r-to"   onchange="loadRange()">
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('t1',this)">resumen</button>
+  <button class="tab-btn"        onclick="showTab('t2',this)">horario</button>
+  <button class="tab-btn"        onclick="showTab('t3',this)">por cadena</button>
+</div>
+
+<!-- ══ TAB 1 — RESUMEN ══════════════════════════════════════════════════════ -->
+<div id="t1" class="tab-pane active">
+  <div class="toolbar">
+    <input type="text" id="t1s" placeholder="/ buscar usuario o lugar..." oninput="t1Filter()">
+    <button class="fbtn active" id="f1a" onclick="t1Set('all')">todos</button>
+    <button class="fbtn"        id="f1n" onclick="t1Set('anom')">con anomalias</button>
+    <button class="fbtn"        id="f1c" onclick="t1Set('clean')">sin anomalias</button>
+    <span class="badge" id="t1b"></span>
+  </div>
+  <div class="twrap">
+  <table>
+    <thead><tr>
+      <th onclick="sortT1(0)">usuario<span class="sa" id="s10"></span></th>
+      <th onclick="sortT1(1)">horas<span class="sa" id="s11"></span></th>
+      <th onclick="sortT1(2)">primera entrada<span class="sa" id="s12"></span></th>
+      <th onclick="sortT1(3)">ultima salida<span class="sa" id="s13"></span></th>
+      <th onclick="sortT1(4)">anomalias<span class="sa" id="s14"></span></th>
+      <th onclick="sortT1(5)">marc.<span class="sa" id="s15"></span></th>
+      <th>lugares (tiempo)</th>
+    </tr></thead>
+    <tbody id="t1-body"></tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ══ TAB 2 — HORARIO ══════════════════════════════════════════════════════ -->
+<div id="t2" class="tab-pane">
+  <div class="stats-bar" id="t2-stats"></div>
+  <div class="toolbar">
+    <input type="text" id="t2s" placeholder="/ buscar usuario o lugar..." oninput="t2Filter()">
+    <div style="display:flex;align-items:center;gap:6px">
+      <span style="color:var(--tx3);font-size:11px">DESDE</span>
+      <input type="time" id="t2from" value="00:00" style="max-width:110px" onchange="t2Filter()">
+      <span style="color:var(--tx3);font-size:11px">HASTA</span>
+      <input type="time" id="t2to"   value="23:59" style="max-width:110px" onchange="t2Filter()">
+    </div>
+    <select id="t2tipo" onchange="t2Filter()">
+      <option value="">tipo: todos</option>
+      <option value="ENTRADA">solo entradas</option>
+      <option value="SALIDA">solo salidas</option>
+    </select>
+    <select id="t2cad" onchange="t2Filter()"></select>
+    <span class="badge" id="t2b"></span>
+  </div>
+  <div class="twrap">
+  <table>
+    <thead><tr>
+      <th onclick="sortT2(0)">hora<span class="sa" id="s20"></span></th>
+      <th onclick="sortT2(1)">usuario<span class="sa" id="s21"></span></th>
+      <th onclick="sortT2(2)">tipo<span class="sa" id="s22"></span></th>
+      <th onclick="sortT2(3)">lugar<span class="sa" id="s23"></span></th>
+      <th onclick="sortT2(4)">cadena<span class="sa" id="s24"></span></th>
+    </tr></thead>
+    <tbody id="t2-body"></tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ══ TAB 3 — POR CADENA ═══════════════════════════════════════════════════ -->
+<div id="t3" class="tab-pane">
+  <div class="toolbar">
+    <input type="text" id="t3s" placeholder="/ buscar cadena, lugar o usuario..." oninput="t3Filter()">
+    <span class="badge" id="t3b"></span>
+  </div>
+  <div class="tab3w" id="t3-body"></div>
+</div>
+
+<!-- ══ DETAIL MODAL ══════════════════════════════════════════════════════════ -->
+<div class="overlay" id="det-overlay" onclick="closeDet(event)">
+  <div class="modal">
+    <div class="mhdr">
+      <span class="mtitle">detalle // marcaciones</span>
+      <button class="xbtn" onclick="closeDet()">[x]</button>
+    </div>
+    <div class="mbody" id="det-body"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// MOCK DATA
+// ═══════════════════════════════════════════════════════════
+
+const MOCK_DATA = {
+  "dia": "2026-04-30",
+  "stats": {
+    "n_entradas": 8,
+    "n_salidas": 6,
+    "n_active": 2,
+    "n_workers": 4
+  },
+  "cadenas": ["CARREFOUR", "VEA", "WAL MART", "CHANGO MAS", "DIA"],
+  "users": {
+    "Juan Pérez": {
+      "primer_entrada": { "hora": "08:45", "lugar": "CARREFOUR" },
+      "ultima_salida": { "hora": "17:30", "lugar": "CARREFOUR" },
+      "total": 6,
+      "total_mins": 480,
+      "has_anomalia": false,
+      "lugar_times": { "CARREFOUR": 240, "VEA": 60 },
+      "lugar_visits": {
+        "CARREFOUR": [
+          { "e": "08:45", "s": "12:30", "min": 225, "id_e": 1, "id_s": 2 },
+          { "e": "13:15", "s": "17:30", "min": 255, "id_e": 5, "id_s": 6 }
+        ],
+        "VEA": [
+          { "e": "12:35", "s": "13:10", "min": 35, "id_e": 3, "id_s": 4 }
+        ]
+      },
+      "timeline": [
+        { "kind": "lugar", "lugar": "CARREFOUR", "e": "08:45", "s": "12:30", "min": 225, "is_anom": false, "anom_msg": "" },
+        { "kind": "intervalo", "lugar": "", "e": "12:30", "s": "12:35", "min": 5, "is_anom": false, "anom_msg": "" },
+        { "kind": "lugar", "lugar": "VEA", "e": "12:35", "s": "13:10", "min": 35, "is_anom": false, "anom_msg": "" },
+        { "kind": "intervalo", "lugar": "", "e": "13:10", "s": "13:15", "min": 5, "is_anom": false, "anom_msg": "" },
+        { "kind": "lugar", "lugar": "CARREFOUR", "e": "13:15", "s": "17:30", "min": 255, "is_anom": false, "anom_msg": "" }
+      ],
+      "anomalias": [],
+      "rows": [
+        { "id": 1, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "08:45", "lugar": "CARREFOUR", "cadena": "CARREFOUR", "tipo": "ENTRADA", "manual": 0 },
+        { "id": 2, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "12:30", "lugar": "CARREFOUR", "cadena": "CARREFOUR", "tipo": "SALIDA", "manual": 0 },
+        { "id": 3, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "12:35", "lugar": "VEA", "cadena": "VEA", "tipo": "ENTRADA", "manual": 0 },
+        { "id": 4, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "13:10", "lugar": "VEA", "cadena": "VEA", "tipo": "SALIDA", "manual": 0 },
+        { "id": 5, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "13:15", "lugar": "CARREFOUR", "cadena": "CARREFOUR", "tipo": "ENTRADA", "manual": 0 },
+        { "id": 6, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "17:30", "lugar": "CARREFOUR", "cadena": "CARREFOUR", "tipo": "SALIDA", "manual": 0 }
+      ]
+    },
+    "María Gómez": {
+      "primer_entrada": { "hora": "09:00", "lugar": "WAL MART" },
+      "ultima_salida": { "hora": "18:00", "lugar": "CHANGO MAS" },
+      "total": 6,
+      "total_mins": 420,
+      "has_anomalia": true,
+      "lugar_times": { "WAL MART": 120, "CHANGO MAS": 330 },
+      "lugar_visits": {
+        "WAL MART": [
+          { "e": "09:00", "s": "11:00", "min": 120, "id_e": 7, "id_s": 8 }
+        ],
+        "CHANGO MAS": [
+          { "e": "12:00", "s": "15:00", "min": 180, "id_e": 9, "id_s": 10 },
+          { "e": "15:30", "s": "18:00", "min": 150, "id_e": 11, "id_s": 12 }
+        ]
+      },
+      "timeline": [
+        { "kind": "lugar", "lugar": "WAL MART", "e": "09:00", "s": "11:00", "min": 120, "is_anom": false, "anom_msg": "" },
+        { "kind": "intervalo", "lugar": "", "e": "11:00", "s": "12:00", "min": 60, "is_anom": false, "anom_msg": "" },
+        { "kind": "lugar", "lugar": "CHANGO MAS", "e": "12:00", "s": "15:00", "min": 180, "is_anom": false, "anom_msg": "" },
+        { "kind": "intervalo", "lugar": "", "e": "15:00", "s": "15:30", "min": 30, "is_anom": false, "anom_msg": "" },
+        { "kind": "lugar", "lugar": "CHANGO MAS", "e": "15:30", "s": "18:00", "min": 150, "is_anom": false, "anom_msg": "" }
+      ],
+      "anomalias": [
+        { "msg": "SALIDA sin ENTRADA en 'WAL MART' a las 11:00", "ids": [8] }
+      ],
+      "rows": [
+        { "id": 7, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "09:00", "lugar": "WAL MART", "cadena": "WAL MART", "tipo": "ENTRADA", "manual": 0 },
+        { "id": 8, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "11:00", "lugar": "WAL MART", "cadena": "WAL MART", "tipo": "SALIDA", "manual": 0 },
+        { "id": 9, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "12:00", "lugar": "CHANGO MAS", "cadena": "CHANGO MAS", "tipo": "ENTRADA", "manual": 0 },
+        { "id": 10, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "15:00", "lugar": "CHANGO MAS", "cadena": "CHANGO MAS", "tipo": "SALIDA", "manual": 0 },
+        { "id": 11, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "15:30", "lugar": "CHANGO MAS", "cadena": "CHANGO MAS", "tipo": "ENTRADA", "manual": 0 },
+        { "id": 12, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "18:00", "lugar": "CHANGO MAS", "cadena": "CHANGO MAS", "tipo": "SALIDA", "manual": 0 }
+      ]
+    },
+    "Carlos Rodríguez": {
+      "primer_entrada": { "hora": "10:00", "lugar": "-" },
+      "ultima_salida": { "hora": "16:30", "lugar": "VEA" },
+      "total": 4,
+      "total_mins": 60,
+      "has_anomalia": true,
+      "lugar_times": { "VEA": 60 },
+      "lugar_visits": {
+        "VEA": [
+          { "e": "13:30", "s": "14:30", "min": 60, "id_e": 15, "id_s": 16 }
+        ]
+      },
+      "timeline": [
+        { "kind": "fuera", "lugar": "-", "e": "10:00", "s": "10:30", "min": 30, "is_anom": true, "anom_msg": "Fuera de Rango: ENTRADA 10:00 - SALIDA 10:30 (30 min)" },
+        { "kind": "intervalo", "lugar": "", "e": "10:30", "s": "13:30", "min": 180, "is_anom": false, "anom_msg": "" },
+        { "kind": "lugar", "lugar": "VEA", "e": "13:30", "s": "14:30", "min": 60, "is_anom": false, "anom_msg": "" },
+        { "kind": "intervalo", "lugar": "", "e": "14:30", "s": "16:30", "min": 120, "is_anom": false, "anom_msg": "" },
+        { "kind": "unpaired", "lugar": "VEA", "e": null, "s": "16:30", "min": 0, "is_anom": true, "anom_msg": "SALIDA sin ENTRADA en 'VEA' a las 16:30" }
+      ],
+      "anomalias": [
+        { "msg": "Fuera de Rango: ENTRADA 10:00 - SALIDA 10:30 (30 min)", "ids": [13, 14] },
+        { "msg": "SALIDA sin ENTRADA en 'VEA' a las 16:30", "ids": [16] }
+      ],
+      "rows": [
+        { "id": 13, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "10:00", "lugar": "-", "cadena": "FUERA DE RANGO", "tipo": "ENTRADA", "manual": 0 },
+        { "id": 14, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "10:30", "lugar": "-", "cadena": "FUERA DE RANGO", "tipo": "SALIDA", "manual": 0 },
+        { "id": 15, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "13:30", "lugar": "VEA", "cadena": "VEA", "tipo": "ENTRADA", "manual": 0 },
+        { "id": 16, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "16:30", "lugar": "VEA", "cadena": "VEA", "tipo": "SALIDA", "manual": 0 }
+      ]
+    },
+    "Ana Fernández": {
+      "primer_entrada": { "hora": "08:30", "lugar": "DIA" },
+      "ultima_salida": { "hora": "12:15", "lugar": "DIA" },
+      "total": 2,
+      "total_mins": 35,
+      "has_anomalia": true,
+      "lugar_times": { "DIA": 35 },
+      "lugar_visits": {
+        "DIA": [
+          { "e": "08:30", "s": "12:15", "min": 35, "id_e": 17, "id_s": 18 }
+        ]
+      },
+      "timeline": [
+        { "kind": "lugar", "lugar": "DIA", "e": "08:30", "s": "12:15", "min": 35, "is_anom": true, "anom_msg": "Marcacion < 15 min en 'DIA': ENTRADA 08:30 - SALIDA 12:15 (35 min)" }
+      ],
+      "anomalias": [
+        { "msg": "Marcacion < 15 min en 'DIA': ENTRADA 08:30 - SALIDA 12:15 (35 min)", "ids": [17, 18] }
+      ],
+      "rows": [
+        { "id": 17, "usuario": "Ana Fernández", "dia": "2026-04-30", "hora": "08:30", "lugar": "DIA", "cadena": "DIA", "tipo": "ENTRADA", "manual": 0 },
+        { "id": 18, "usuario": "Ana Fernández", "dia": "2026-04-30", "hora": "12:15", "lugar": "DIA", "cadena": "DIA", "tipo": "SALIDA", "manual": 0 }
+      ]
+    }
+  },
+  "cadena_map": {
+    "CARREFOUR": {
+      "CARREFOUR": [
+        { "usuario": "Juan Pérez", "e": "08:45", "s": "12:30", "min": 225, "id_e": 1, "id_s": 2 },
+        { "usuario": "Juan Pérez", "e": "13:15", "s": "17:30", "min": 255, "id_e": 5, "id_s": 6 }
+      ]
+    },
+    "VEA": {
+      "VEA": [
+        { "usuario": "Juan Pérez", "e": "12:35", "s": "13:10", "min": 35, "id_e": 3, "id_s": 4 },
+        { "usuario": "Carlos Rodríguez", "e": "13:30", "s": "14:30", "min": 60, "id_e": 15, "id_s": 16 }
+      ]
+    },
+    "WAL MART": {
+      "WAL MART": [
+        { "usuario": "María Gómez", "e": "09:00", "s": "11:00", "min": 120, "id_e": 7, "id_s": 8 }
+      ]
+    },
+    "CHANGO MAS": {
+      "CHANGO MAS": [
+        { "usuario": "María Gómez", "e": "12:00", "s": "15:00", "min": 180, "id_e": 9, "id_s": 10 },
+        { "usuario": "María Gómez", "e": "15:30", "s": "18:00", "min": 150, "id_e": 11, "id_s": 12 }
+      ]
+    },
+    "DIA": {
+      "DIA": [
+        { "usuario": "Ana Fernández", "e": "08:30", "s": "12:15", "min": 35, "id_e": 17, "id_s": 18 }
+      ]
+    }
+  },
+  "all_marks": [
+    { "id": 17, "usuario": "Ana Fernández", "dia": "2026-04-30", "hora": "08:30", "lugar": "DIA", "cadena": "DIA", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+    { "id": 1, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "08:45", "lugar": "CARREFOUR", "cadena": "CARREFOUR", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+    { "id": 7, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "09:00", "lugar": "WAL MART", "cadena": "WAL MART", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+    { "id": 13, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "10:00", "lugar": "-", "cadena": "FUERA DE RANGO", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+    { "id": 14, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "10:30", "lugar": "-", "cadena": "FUERA DE RANGO", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+    { "id": 8, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "11:00", "lugar": "WAL MART", "cadena": "WAL MART", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+    { "id": 18, "usuario": "Ana Fernández", "dia": "2026-04-30", "hora": "12:15", "lugar": "DIA", "cadena": "DIA", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+    { "id": 2, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "12:30", "lugar": "CARREFOUR", "cadena": "CARREFOUR", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+    { "id": 3, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "12:35", "lugar": "VEA", "cadena": "VEA", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+    { "id": 9, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "12:00", "lugar": "CHANGO MAS", "cadena": "CHANGO MAS", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+    { "id": 4, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "13:10", "lugar": "VEA", "cadena": "VEA", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+    { "id": 5, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "13:15", "lugar": "CARREFOUR", "cadena": "CARREFOUR", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+    { "id": 15, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "13:30", "lugar": "VEA", "cadena": "VEA", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+    { "id": 10, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "15:00", "lugar": "CHANGO MAS", "cadena": "CHANGO MAS", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+    { "id": 11, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "15:30", "lugar": "CHANGO MAS", "cadena": "CHANGO MAS", "tipo": "ENTRADA", "manual": 0, "kind": "marca" },
+    { "id": 16, "usuario": "Carlos Rodríguez", "dia": "2026-04-30", "hora": "16:30", "lugar": "VEA", "cadena": "VEA", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+    { "id": 6, "usuario": "Juan Pérez", "dia": "2026-04-30", "hora": "17:30", "lugar": "CARREFOUR", "cadena": "CARREFOUR", "tipo": "SALIDA", "manual": 0, "kind": "marca" },
+    { "id": 12, "usuario": "María Gómez", "dia": "2026-04-30", "hora": "18:00", "lugar": "CHANGO MAS", "cadena": "CHANGO MAS", "tipo": "SALIDA", "manual": 0, "kind": "marca" }
+  ]
+};
+
+const DIAS_MOCK = ["2026-04-30", "2026-04-29", "2026-04-28"];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let DATA    = JSON.parse(JSON.stringify(MOCK_DATA));
+let CUR_DIA = "2026-04-30";
+let PERIOD  = "day";
+let t1F="all", t1SC=-1, t1SA=true;
+let t2SC=-1, t2SA=true;
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+window.addEventListener("DOMContentLoaded", function() {
+  loadDiaList();
+  loadDay("2026-04-30");
+  lucide.createIcons();
+});
+
+function loadDiaList() {
+  const sel = document.getElementById("day-select");
+  sel.innerHTML = DIAS_MOCK.map(d => `<option value="${d}">${fmtDiaLabel(d)}</option>`).join("");
+  if (DIAS_MOCK.length) {
+    document.getElementById("r-from").value = DIAS_MOCK[DIAS_MOCK.length-1];
+    document.getElementById("r-to").value   = DIAS_MOCK[0];
+  }
+}
+
+function fmtDiaLabel(d) {
+  const [y,m,day] = d.split("-");
+  return `${day}/${m}/${y}`;
+}
+
+function setPeriodMode(mode) {
+  PERIOD = mode;
+  document.getElementById("pm-day").classList.toggle("active", mode==="day");
+  document.getElementById("pm-range").classList.toggle("active", mode==="range");
+  document.getElementById("day-select").style.display  = mode==="day" ? "" : "none";
+  document.getElementById("range-fields").classList.toggle("show", mode==="range");
+  if (mode==="range") loadRange();
+  else loadDay(document.getElementById("day-select").value);
+}
+
+function loadDay(dia) {
+  if (!dia) return;
+  CUR_DIA = dia;
+  DATA = JSON.parse(JSON.stringify(MOCK_DATA));
+  DATA.dia = dia;
+  for (const u in DATA.users) {
+    DATA.users[u].rows.forEach(r => r.dia = dia);
+  }
+  DATA.all_marks.forEach(r => r.dia = dia);
+  document.getElementById("hdr-date").textContent = `// ${fmtDiaLabel(dia)}`;
+  renderAll();
+}
+
+function loadRange() {
+  const from = document.getElementById("r-from").value;
+  const to   = document.getElementById("r-to").value;
+  if (!from || !to) return;
+  const first = DIAS_MOCK.find(d => d >= from && d <= to);
+  if (first) {
+    loadDay(first);
+    document.getElementById("hdr-date").textContent = `// ${fmtDiaLabel(from)} → ${fmtDiaLabel(to)}`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function fmtDur(mins) {
+  mins = mins||0;
+  return `${Math.floor(mins/60)}h ${String(Math.floor(mins%60)).padStart(2,"0")}m`;
+}
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;") }
+function uid(s){ return "u"+s.replace(/[^a-zA-Z0-9]/g,"") }
+
+// ═══════════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════════
+function showTab(id, btn) {
+  document.querySelectorAll(".tab-pane").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  btn.classList.add("active");
+}
+
+function renderAll() {
+  renderT1();
+  renderT2();
+  renderT3();
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB 1 — RESUMEN
+// ═══════════════════════════════════════════════════════════
+function renderT1() {
+  const tbody = document.getElementById("t1-body");
+  if (!DATA.users) { tbody.innerHTML=`<tr><td colspan="7" style="color:var(--tx3);padding:20px">Sin datos</td></tr>`; return; }
+  let html = "";
+  for (const [usuario, info] of Object.entries(DATA.users).sort((a,b)=>a[0].localeCompare(b[0],"es"))) {
+    const pe = info.primer_entrada;
+    const us = info.ultima_salida;
+    const peStr = pe
+      ? `<span class="cell-time">${pe.hora}</span><span class="cell-place">${esc(pe.lugar)}</span>`
+      : "&mdash;";
+    const usStr = us
+      ? `<span class="cell-time">${us.hora}</span><span class="cell-place">${esc(us.lugar)}</span>`
+      : "&mdash;";
+    const peD    = pe ? `${pe.hora} ${pe.lugar}`.toLowerCase() : "";
+    const n      = info.anomalias?.length||0;
+    const lugEntries = Object.entries(info.lugar_times||{});
+    const lugLines   = lugEntries
+      .map(([l,m])=>`${esc(l)} <span class="ld">(${fmtDur(m)})</span>`).join("<br>") || "&mdash;";
+    const lugCount   = lugEntries.length;
+    const hasManual  = (info.rows||[]).some(r=>r.manual);
+    const manBadge   = hasManual ? `<span class="manual-badge">editado</span>` : "";
+    const anomSym = n
+      ? `<span class="ap">!</span>`
+      : `<span class="ok-sym">✓</span>`;
+
+    html += `<tr class="dr"
+      data-u="${esc(usuario).toLowerCase()}"
+      data-pe="${peD}"
+      data-lug="${Object.keys(info.lugar_times||{}).join(" ").toLowerCase()}"
+      data-anom="${n}" data-mins="${(info.total_mins||0).toFixed(0)}"
+      onclick="openDet('${uid(usuario)}')">
+      <td class="tdu">&#x25B6; ${esc(usuario)}${manBadge}</td>
+      <td class="td-hrs">${fmtDur(info.total_mins)}</td>
+      <td>${peStr}</td>
+      <td>${usStr}</td>
+      <td class="${n?"td-anom":"td-ok"}">${anomSym}</td>
+      <td class="tdc">${info.total}</td>
+      <td class="td-lug">
+        <span class="lug-full">${lugLines}</span>
+        <span class="lug-count">${lugCount} lugar${lugCount!==1?"es":""}</span>
+      </td>
+    </tr>`;
+  }
+  tbody.innerHTML = html;
+  t1Filter();
+}
+
+function t1Filter() {
+  const q = document.getElementById("t1s").value.toLowerCase();
+  const rows = document.querySelectorAll("#t1-body .dr");
+  let vis=0;
+  rows.forEach(r=>{
+    const anom = parseInt(r.dataset.anom)||0;
+    const txt  = r.dataset.u+" "+r.dataset.pe+" "+r.dataset.lug;
+    const mQ   = !q||txt.includes(q)||[...r.querySelectorAll("td")].some(td=>td.textContent.toLowerCase().includes(q));
+    const mF   = t1F==="all"||(t1F==="anom"&&anom>0)||(t1F==="clean"&&anom===0);
+    const show = mQ&&mF; r.classList.toggle("hidden",!show); if(show)vis++;
+  });
+  document.getElementById("t1b").textContent=vis+" registros";
+}
+
+function t1Set(f){
+  t1F=f;
+  ["a","n","c"].forEach((k,i)=>document.getElementById("f1"+k).classList.toggle("active",["all","anom","clean"][i]===f));
+  t1Filter();
+}
+
+function sortT1(col){
+  if(t1SC===col)t1SA=!t1SA; else{t1SC=col;t1SA=true;}
+  document.querySelectorAll("[id^='s1']").forEach((el,i)=>{el.textContent=i===col?(t1SA?" ▲":" ▼"):"";});
+  const tbody=document.getElementById("t1-body");
+  [...tbody.querySelectorAll(".dr")].sort((a,b)=>{
+    const at=a.querySelectorAll("td")[col]?.textContent.trim()||"";
+    const bt=b.querySelectorAll("td")[col]?.textContent.trim()||"";
+    if(col===1) return t1SA?(parseFloat(a.dataset.mins)||0)-(parseFloat(b.dataset.mins)||0):(parseFloat(b.dataset.mins)||0)-(parseFloat(a.dataset.mins)||0);
+    if(col===4||col===5) return t1SA?(parseFloat(at)||0)-(parseFloat(bt)||0):(parseFloat(bt)||0)-(parseFloat(at)||0);
+    return t1SA?at.localeCompare(bt,"es"):bt.localeCompare(at,"es");
+  }).forEach(r=>tbody.appendChild(r));
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB 2 — HORARIO
+// ═══════════════════════════════════════════════════════════
+function renderT2() {
+  const stats = DATA.stats||{};
+  document.getElementById("t2-stats").innerHTML=`
+    <div class="stat"><span class="sv red">${stats.n_active||0}</span><span class="sl">activos (dentro)</span></div>
+    <div class="stat"><span class="sv green">${stats.n_entradas||0}</span><span class="sl">entradas</span></div>
+    <div class="stat"><span class="sv ora">${stats.n_salidas||0}</span><span class="sl">salidas</span></div>
+    <div class="stat"><span class="sv">${stats.n_workers||0}</span><span class="sl">trabajadores</span></div>`;
+
+  const cads = (DATA.cadenas||[]).filter(c=>c!=="INTERVALO");
+  document.getElementById("t2cad").innerHTML =
+    `<option value="">cadena: todas</option>` +
+    cads.map(c=>`<option value="${c}">${c}</option>`).join("");
+
+  const marks = DATA.all_marks||[];
+  let html="";
+  for (const r of marks) {
+    if (r.kind === "intervalo") {
+      html+=`<tr class="dr2 t2-intervalo"
+        data-u="${esc(r.usuario).toLowerCase()}" data-hora="${r.hora}"
+        data-lug="intervalo" data-cad="intervalo" data-tipo="intervalo">
+        <td style="color:var(--tx3);font-weight:700;white-space:nowrap">${r.hora}<span style="color:var(--ui3)"> → ${r.hora_s||""}</span></td>
+        <td class="tdu2" style="color:var(--tx3)">${esc(r.usuario)}</td>
+        <td style="color:var(--tx3);font-style:italic">&#x21C4; intervalo</td>
+        <td style="color:var(--tx3);font-style:italic">&mdash;</td>
+        <td style="color:var(--tx3);font-size:12px">${fmtDur(r.min)}</td>
+      </tr>`;
+    } else {
+      const lugDisp = r.lugar==="-"
+        ? `<span class="fuera">FUERA DE RANGO</span>`
+        : esc(r.lugar);
+      const manMark = r.manual ? `<span class="manual-dot" title="editado manualmente">✦</span>` : "";
+      html+=`<tr class="dr2"
+        data-u="${esc(r.usuario).toLowerCase()}" data-hora="${r.hora}"
+        data-lug="${esc(r.lugar).toLowerCase()}" data-cad="${r.cadena}"
+        data-tipo="${r.tipo}">
+        <td style="color:var(--yellow);font-weight:700;white-space:nowrap">${r.hora}</td>
+        <td class="tdu2">${manMark}${esc(r.usuario)}</td>
+        <td class="${r.tipo==="ENTRADA"?"te":"ts"}">${r.tipo}</td>
+        <td>${lugDisp}</td>
+        <td class="td-cad">${r.cadena}</td>
+      </tr>`;
+    }
+  }
+  document.getElementById("t2-body").innerHTML=html;
+  t2Filter();
+}
+
+function t2Filter(){
+  const q    = document.getElementById("t2s").value.toLowerCase();
+  const from = document.getElementById("t2from").value;
+  const to   = document.getElementById("t2to").value;
+  const tipo = document.getElementById("t2tipo").value;
+  const cad  = document.getElementById("t2cad").value;
+  const rows = document.querySelectorAll("#t2-body .dr2");
+  let vis=0;
+  rows.forEach(r=>{
+    const h    = r.dataset.hora;
+    const isInt= r.dataset.tipo==="intervalo";
+    if (isInt && (tipo || cad)) { r.classList.add("hidden"); return; }
+    const mQ = !q||(r.dataset.u+r.dataset.lug+r.dataset.cad).includes(q)||
+               [...r.querySelectorAll("td")].some(td=>td.textContent.toLowerCase().includes(q));
+    const mH = h>=from && h<=to;
+    const mT = !tipo || r.dataset.tipo===tipo;
+    const mC = !cad  || r.dataset.cad===cad;
+    const show=mQ&&mH&&mT&&mC; r.classList.toggle("hidden",!show); if(show)vis++;
+  });
+  document.getElementById("t2b").textContent=vis+" marcaciones";
+}
+
+function sortT2(col){
+  if(t2SC===col)t2SA=!t2SA; else{t2SC=col;t2SA=true;}
+  document.querySelectorAll("[id^='s2']").forEach((el,i)=>{el.textContent=i===col?(t2SA?" ▲":" ▼"):"";});
+  const tbody=document.getElementById("t2-body");
+  [...tbody.querySelectorAll(".dr2")].sort((a,b)=>{
+    const at=a.querySelectorAll("td")[col]?.textContent.trim()||"";
+    const bt=b.querySelectorAll("td")[col]?.textContent.trim()||"";
+    return t2SA?at.localeCompare(bt,"es"):bt.localeCompare(at,"es");
+  }).forEach(r=>tbody.appendChild(r));
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB 3 — POR CADENA
+// ═══════════════════════════════════════════════════════════
+function renderT3(){
+  const cm = DATA.cadena_map||{};
+  let html="";
+  for (const cadena of Object.keys(cm).sort()) {
+    html+=`<div class="cblock" data-cadena="${cadena.toLowerCase()}">
+      <div class="ctitle">// ${esc(cadena)}</div>`;
+    for (const lugar of Object.keys(cm[cadena]).sort()) {
+      const visits = cm[cadena][lugar];
+      html+=`<div class="lsec"><div class="lhead">${esc(lugar)}</div>`;
+      for (const v of visits.sort((a,b)=>a.e.localeCompare(b.e))) {
+        html+=`<div class="lrow">
+          <span class="lu">${esc(v.usuario)}</span>
+          <span class="ltimes">
+            <span class="ve">&#x2191; ${v.e}</span>
+            <span class="var">&rarr;</span>
+            <span class="vs">&#x2193; ${v.s}</span>
+            <span class="vd">(${fmtDur(v.min)})</span>
+          </span>
+        </div>`;
+      }
+      html+=`</div>`;
+    }
+    html+=`</div>`;
+  }
+  document.getElementById("t3-body").innerHTML = html||`<p style="color:var(--tx3);padding:20px">Sin datos</p>`;
+  t3Filter();
+}
+
+function t3Filter(){
+  const q=document.getElementById("t3s").value.toLowerCase();
+  let vis=0;
+  document.querySelectorAll(".cblock").forEach(cb=>{
+    const ct=cb.dataset.cadena;
+    let cbv=false;
+    cb.querySelectorAll(".lsec").forEach(ls=>{
+      const lt=ls.querySelector(".lhead").textContent.toLowerCase();
+      let lv=false;
+      ls.querySelectorAll(".lrow").forEach(lr=>{
+        const m=!q||ct.includes(q)||lt.includes(q)||lr.textContent.toLowerCase().includes(q);
+        lr.classList.toggle("hidden",!m);
+        if(m){lv=true;cbv=true;vis++;}
+      });
+      ls.classList.toggle("hidden",!lv);
+    });
+    cb.classList.toggle("hidden",!cbv);
+  });
+  document.getElementById("t3b").textContent=vis+" visitas";
+}
+
+// ═══════════════════════════════════════════════════════════
+// DETAIL MODAL
+// ═══════════════════════════════════════════════════════════
+function openDet(u) {
+  const usuario = Object.keys(DATA.users||{}).find(k=>uid(k)===u);
+  if (!usuario) return;
+  const info = DATA.users[usuario];
+  const pe   = info.primer_entrada;
+  const us   = info.ultima_salida;
+
+  function kv(lbl,val,cls=""){
+    return `<div class="kv ${cls}"><span class="kl">${lbl}</span><span class="kv-v">${val}</span></div>`;
+  }
+
+  const hasAnom  = info.has_anomalia;
+  const anomBadge = hasAnom
+    ? `<span class="anom-badge">&#9888; con anomalias</span>`
+    : `<span class="ok-badge">&#10003; sin anomalias</span>`;
+
+  let h = `<div class="det-title">&#x25B6; ${esc(usuario)} ${anomBadge}</div>`;
+  h += `<div class="det-sec">// resumen general</div>`;
+  h += kv("primera entrada", pe?`${pe.hora} &mdash; ${esc(pe.lugar)}`:"sin registro","kv-entry");
+  h += kv("ultima salida",   us?`${us.hora} &mdash; ${esc(us.lugar)}`:"sin registro","kv-exit");
+  h += kv("total marcaciones", info.total);
+  h += kv("total horas", fmtDur(info.total_mins),"kv-hrs");
+
+  h += `<div class="det-sec">// detalle de marcaciones</div>`;
+  const tl = info.timeline || [];
+
+  if (!tl.length) {
+    h += `<div style="color:var(--tx3);font-size:13px;padding:5px 0">-- sin marcaciones registradas --</div>`;
+  } else {
+    h += `<table class="tl-table">
+      <thead><tr>
+        <th style="width:44%">lugar</th>
+        <th>entrada</th>
+        <th>salida</th>
+        <th>duracion</th>
+      </tr></thead><tbody>`;
+
+    for (const row of tl) {
+      if (row.kind === "lugar") {
+        const flag   = row.is_anom ? `<span class="tl-anom-flag">!</span> ` : "";
+        const cls    = row.is_anom ? "tl-row-anom" : "tl-row-lugar";
+        h += `<tr class="${cls}">
+          <td>${flag}${esc(row.lugar)}</td>
+          <td class="tl-e">${row.e||"?"}</td>
+          <td class="tl-s">${row.s||"?"}</td>
+          <td class="tl-d">${fmtDur(row.min)}</td>
+        </tr>`;
+      } else if (row.kind === "fuera") {
+        h += `<tr class="tl-row-fuera">
+          <td><span class="tl-anom-flag">!</span> FUERA DE RANGO</td>
+          <td class="tl-e">${row.e||"?"}</td>
+          <td class="tl-s">${row.s||"?"}</td>
+          <td class="tl-d">${fmtDur(row.min)}</td>
+        </tr>`;
+      } else if (row.kind === "intervalo") {
+        h += `<tr class="tl-row-intervalo">
+          <td class="tl-int-lbl">&#x21C4; intervalo</td>
+          <td class="tl-e">${row.e||""}</td>
+          <td class="tl-s">${row.s||""}</td>
+          <td class="tl-d">${fmtDur(row.min)}</td>
+        </tr>`;
+      } else if (row.kind === "unpaired") {
+        const lbl   = row.lugar==="-" ? "FUERA DE RANGO" : esc(row.lugar)||"?";
+        h += `<tr class="tl-row-fuera">
+          <td><span class="tl-anom-flag">!</span> ${lbl}</td>
+          <td class="tl-e">${row.e||"—"}</td>
+          <td class="tl-s">${row.s||"—"}</td>
+          <td class="tl-d tl-unpaired">${row.e?"sin salida":"sin entrada"}</td>
+        </tr>`;
+      }
+    }
+    h += `</tbody></table>`;
+
+    if ((info.anomalias||[]).length) {
+      h += `<div class="det-sec">// lista de anomalias</div>`;
+      for (const a of info.anomalias) {
+        h += `<div class="anom-item">
+          <span class="anom-txt">! ${esc(a.msg)}</span>
+        </div>`;
+      }
+    }
+  }
+
+  document.getElementById("det-body").innerHTML = h;
+  document.getElementById("det-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeDet(e){
+  if(e&&e.target!==document.getElementById("det-overlay")&&e.type==="click") return;
+  document.getElementById("det-overlay").classList.remove("open");
+  document.body.style.overflow="";
+}
+
+// ═══════════════════════════════════════════════════════════
+// CSV / TXT download (mock)
+// ═══════════════════════════════════════════════════════════
+function downloadTXT() {
+  const d = new Date(CUR_DIA + 'T00:00:00');
+  const SEP = '='.repeat(70);
+  let lines = [SEP, `  REPORTE DE MARCACIONES - ${d.toLocaleDateString('es-AR')}`, SEP, ''];
+
+  for (const [usuario, info] of Object.entries(DATA.users)) {
+    const pe = info.primer_entrada;
+    const us = info.ultima_salida;
+
+    lines.push(SEP, `USUARIO: ${usuario}`, SEP, '\n[ RESUMEN GENERAL ]');
+    lines.push(`  Primera entrada  : ${pe ? pe.hora + ' - ' + pe.lugar : 'Sin registro'}`);
+    lines.push(`  Ultima salida    : ${us ? us.hora + ' - ' + us.lugar : 'Sin registro'}`);
+    lines.push(`  Total marcaciones: ${info.total}`);
+    lines.push(`  Total horas      : ${fmtDur(info.total_mins)}`);
+    lines.push(`  Anomalias        : ${info.has_anomalia ? 'SI' : 'No'}`);
+
+    lines.push('\n[ DETALLE DE MARCACIONES ]');
+    lines.push(`  ${'LUGAR'.padEnd(40)} ${'ENTRADA'.padStart(7)}  ${'SALIDA'.padStart(7)}  DURACION`);
+    lines.push('  ' + '-'.repeat(66));
+
+    info.timeline.forEach(row => {
+      if (row.kind === 'lugar') {
+        const flag = row.is_anom ? '! ' : '  ';
+        lines.push(`${flag}${row.lugar.padEnd(40)} ${String(row.e).padStart(7)}  ${String(row.s).padStart(7)}  ${fmtDur(row.min)}`);
+        if (row.is_anom && row.anom_msg) {
+          lines.push(`    ^ ${row.anom_msg}`);
+        }
+      } else if (row.kind === 'fuera') {
+        lines.push(`! ${'FUERA DE RANGO'.padEnd(40)} ${String(row.e).padStart(7)}  ${String(row.s).padStart(7)}  ${fmtDur(row.min)}`);
+        if (row.anom_msg) lines.push(`    ^ ${row.anom_msg}`);
+      } else if (row.kind === 'intervalo') {
+        lines.push(`  ${'  ~ intervalo'.padEnd(40)} ${String(row.e).padStart(7)}  ${String(row.s).padStart(7)}  ${fmtDur(row.min)}`);
+      } else if (row.kind === 'unpaired') {
+        const lbl = row.lugar === '-' ? 'FUERA DE RANGO' : row.lugar;
+        const e_s = `${String(row.e || '?').padStart(7)}  ${String(row.s || '?').padStart(7)}`;
+        lines.push(`! ${lbl.padEnd(40)} ${e_s}  (sin par)`);
+      }
+    });
+
+    if (info.anomalias.length > 0) {
+      lines.push('\n[ ANOMALIAS ]');
+      info.anomalias.forEach(a => {
+        lines.push(`  ! ${a.msg}`);
+      });
+    }
+    lines.push('');
+  }
+
+  lines.push(SEP, 'FIN DEL REPORTE', SEP);
+  const txt = lines.join('\n');
+  const blob = new Blob([txt], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${CUR_DIA.replace(/-/g,'')}_RM.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadCSV() {
+  const rows = [];
+  for (const u in DATA.users) {
+    DATA.users[u].rows.forEach(r => {
+      rows.push([
+        r.id,
+        r.usuario,
+        r.dia,
+        r.hora,
+        r.lugar,
+        r.cadena,
+        r.tipo,
+        r.manual ? 'MANUAL' : 'ORIGINAL'
+      ]);
+    });
+  }
+  let csv = '\uFEFFID,Usuario,Dia,Hora,Lugar,Cadena,Tipo,Manual\n';
+  rows.forEach(r => {
+    csv += r.join(',') + '\n';
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${CUR_DIA.replace(/-/g,'')}_marcaciones.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ═══════════════════════════════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════════════════════════════
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") closeDet();
+});
+</script>
+</body>
+</html>
