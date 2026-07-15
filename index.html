@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="https://unpkg.com/lucide@latest"></script>
 <title>JOBTrack</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
@@ -148,6 +149,36 @@ td{padding:9px 13px;border-bottom:1px solid var(--ui1);vertical-align:top;line-h
 .anom-txt:hover{color:var(--orange);text-decoration:underline}
 .det-ok{color:var(--green);font-size:14px;padding:5px 0}
 
+/* EDITOR MODAL */
+.ed-overlay{position:fixed;inset:0;background:rgba(16,15,15,.92);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.ed-overlay.open{display:flex}
+.ed-modal{background:var(--bg2);border:1px solid var(--ui3);width:100%;max-width:700px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
+.ed-hdr{display:flex;justify-content:space-between;align-items:center;padding:13px 22px;border-bottom:1px solid var(--ui2);background:var(--bg3);position:sticky;top:0;z-index:1}
+.ed-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow)}
+.ed-body{padding:20px 24px}
+.ed-user{font-size:14px;color:var(--cyan);font-weight:700;margin-bottom:4px}
+.ed-anom{font-size:13px;color:var(--red);margin-bottom:16px;padding:8px;background:rgba(209,77,65,.1);border-left:2px solid var(--red)}
+.ed-table{width:100%;border-collapse:collapse;margin-bottom:16px}
+.ed-table th{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);padding:7px 10px;text-align:left;border-bottom:1px solid var(--ui3)}
+.ed-table td{padding:6px 8px;border-bottom:1px solid var(--ui1);vertical-align:middle}
+.ed-row.highlighted{background:rgba(208,162,21,.08);border-left:2px solid var(--yellow)}
+.ed-row.manual-row{background:rgba(206,93,151,.06)}
+.ed-input{background:var(--bg);border:1px solid var(--ui3);color:var(--tx);padding:5px 8px;font-family:var(--F);font-size:13px;outline:none;width:100%}
+.ed-input:focus{border-color:var(--cyan)}
+.ed-sel{background:var(--bg);border:1px solid var(--ui3);color:var(--tx);padding:5px 8px;font-family:var(--F);font-size:13px;outline:none;width:100%}
+.ed-sel option{background:var(--bg2)}
+.icon-btn{background:none;border:none;cursor:pointer;font-size:14px;padding:3px 6px;transition:opacity .15s}
+.icon-btn:hover{opacity:.7}
+.del-btn{color:var(--red)}
+.save-btn{color:var(--green)}
+.ed-actions{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.add-row-btn{background:transparent;border:1px solid var(--green);color:var(--green);padding:7px 14px;cursor:pointer;font-family:var(--F);font-size:12px;transition:all .15s}
+.add-row-btn:hover{background:var(--green);color:#000}
+.save-all-btn{background:transparent;border:1px solid var(--cyan);color:var(--cyan);padding:7px 14px;cursor:pointer;font-family:var(--F);font-size:12px;transition:all .15s}
+.save-all-btn:hover{background:var(--cyan);color:#000}
+.ed-note{font-size:11px;color:var(--tx3)}
+.manual-badge{display:inline-block;font-size:10px;color:var(--magenta);border:1px solid var(--magenta);padding:1px 5px;margin-left:4px}
+
 /* TIMELINE TABLE */
 .tl-table{width:100%;border-collapse:collapse;margin:6px 0 14px;font-size:13px}
 .tl-table thead tr{border-bottom:1px solid var(--ui3)}
@@ -167,7 +198,6 @@ td{padding:9px 13px;border-bottom:1px solid var(--ui1);vertical-align:top;line-h
 .tl-s{color:var(--orange);font-weight:700;white-space:nowrap}
 .tl-d{color:var(--tx2);font-size:12px;white-space:nowrap}
 .tl-unpaired{color:var(--red);font-size:12px}
-
 /* BADGES */
 .anom-badge{display:inline-block;font-size:11px;font-weight:700;color:var(--red);border:1px solid rgba(209,77,65,.4);background:rgba(209,77,65,.1);padding:2px 8px;margin-left:8px;vertical-align:middle}
 .ok-badge{display:inline-block;font-size:11px;font-weight:700;color:var(--green);border:1px solid rgba(135,154,57,.4);background:rgba(135,154,57,.1);padding:2px 8px;margin-left:8px;vertical-align:middle}
@@ -176,16 +206,268 @@ td{padding:9px 13px;border-bottom:1px solid var(--ui1);vertical-align:top;line-h
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--ui3)}
 ::-webkit-scrollbar-thumb:hover{background:var(--tx3)}
+
+/* ─── RESPONSIVE: A PARTIR DE 930px SOLO NOMBRE Y ANOMALIAS ─── */
+@media (max-width: 930px) {
+  /* Ocultar columnas en el HEADER de TAB 1 */
+  #t1 thead th:nth-child(2),
+  #t1 thead th:nth-child(3),
+  #t1 thead th:nth-child(4),
+  #t1 thead th:nth-child(6),
+  #t1 thead th:nth-child(7) {
+    display: none !important;
+  }
+
+  /* Ocultar columnas en el BODY de TAB 1 */
+  #t1-body td:nth-child(2),
+  #t1-body td:nth-child(3),
+  #t1-body td:nth-child(4),
+  #t1-body td:nth-child(6),
+  #t1-body td:nth-child(7) {
+    display: none !important;
+  }
+
+  /* Mantener visibles: usuario (col 1) y anomalías (col 5) */
+  #t1 thead th:nth-child(1),
+  #t1 thead th:nth-child(5) {
+    display: table-cell !important;
+  }
+  #t1-body td:nth-child(1),
+  #t1-body td:nth-child(5) {
+    display: table-cell !important;
+  }
+
+  /* Ajustes para el nombre */
+  #t1-body .tdu {
+    font-size: 14px;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  /* Anomalías más grandes */
+  #t1-body .ap {
+    font-size: 22px !important;
+  }
+  #t1-body .ok-sym {
+    font-size: 20px !important;
+  }
+
+  /* Ajustes generales de padding */
+  .hdr {
+    padding: 16px 20px 10px;
+    gap: 10px;
+  }
+  .hdr h1 {
+    font-size: 18px;
+  }
+  .period-bar {
+    padding: 8px 20px;
+  }
+  .twrap {
+    padding: 0 20px 30px;
+    overflow-x: auto;
+  }
+  table {
+    font-size: 13px;
+  }
+  th {
+    font-size: 9px;
+    padding: 6px 10px;
+  }
+  td {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
+
+/* ─── RESPONSIVE PARA MÓVILES (≤ 480px) ─── */
+@media (max-width: 480px) {
+  .hdr {
+    padding: 12px 12px 8px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .hdr h1 {
+    font-size: 15px;
+  }
+  .prompt {
+    font-size: 11px;
+  }
+  .hdr-date {
+    font-size: 10px;
+  }
+  .cursor {
+    height: 12px;
+    width: 6px;
+  }
+  .csv-btn {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+  .period-bar {
+    padding: 6px 12px;
+    gap: 6px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .period-mode {
+    justify-content: center;
+  }
+  .period-bar select,
+  .period-bar input[type=date] {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+  .pbtn {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+  #range-fields {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #range-fields input {
+    max-width: 120px;
+  }
+  .tabs {
+    padding: 0 10px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    font-size: 11px;
+    padding: 7px 10px;
+  }
+  .toolbar {
+    padding: 6px 12px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .toolbar input {
+    font-size: 12px;
+    padding: 5px 8px;
+    min-width: unset;
+    max-width: 100%;
+  }
+  .fbtn {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+  .badge {
+    font-size: 10px;
+    margin-left: 0;
+    text-align: center;
+    padding-top: 4px;
+  }
+  .stats-bar {
+    padding: 6px 12px;
+    gap: 10px;
+    justify-content: center;
+  }
+  .stat {
+    align-items: center;
+  }
+  .sv {
+    font-size: 13px;
+  }
+  .sl {
+    font-size: 8px;
+  }
+  .twrap {
+    padding: 0 12px 20px;
+    overflow-x: auto;
+  }
+  table {
+    font-size: 12px;
+  }
+  th {
+    font-size: 8px;
+    padding: 4px 6px;
+  }
+  td {
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+  #t1-body .tdu {
+    font-size: 13px;
+  }
+  #t1-body .ap {
+    font-size: 20px !important;
+  }
+  #t1-body .ok-sym {
+    font-size: 18px !important;
+  }
+  #t2 thead th:nth-child(5),
+  #t2-body td:nth-child(5) {
+    display: none !important;
+  }
+  #t2from,
+  #t2to {
+    max-width: 80px !important;
+    font-size: 11px !important;
+    padding: 4px 6px !important;
+  }
+  .tab3w {
+    padding: 10px 12px 20px;
+  }
+  .ctitle {
+    font-size: 11px;
+  }
+  .lhead {
+    font-size: 12px;
+  }
+  .lu {
+    min-width: 100px;
+    font-size: 11px;
+  }
+  .ltimes {
+    font-size: 11px;
+    flex-wrap: wrap;
+  }
+  .lrow {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .modal {
+    max-width: 95%;
+    max-height: 95vh;
+  }
+  .mbody {
+    padding: 12px 14px;
+  }
+  .kl {
+    min-width: 120px;
+    font-size: 12px;
+  }
+  .kv-v {
+    font-size: 13px;
+  }
+  .tl-table {
+    font-size: 11px;
+  }
+  .tl-table th {
+    font-size: 8px;
+    padding: 3px 4px;
+  }
+  .tl-table td {
+    padding: 3px 4px;
+    font-size: 11px;
+  }
+  .mock-banner {
+    margin: 6px 12px 0;
+    font-size: 10px;
+    padding: 4px 10px;
+    flex-wrap: wrap;
+  }
+}
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <div class="hdr">
-  <span class="prompt">$</span>
+  <i data-lucide="id-card" style="color:var(--cyan);width:22px;height:22px;display:inline-block;"></i>
   <h1>JOBTrack</h1>
-  <span class="hdr-date" id="hdr-date">// cargando...</span>
-  <span class="cursor"></span>
+  <span class="hdr-date" id="hdr-date">// control de marcaciones</span>
   <div class="hdr-spacer"></div>
   <button class="csv-btn" onclick="downloadTXT()" style="border-color:var(--purple);color:var(--purple)">↓ exportar txt</button>
   <button class="csv-btn" onclick="downloadCSV()">↓ exportar csv</button>
@@ -194,7 +476,7 @@ td{padding:9px 13px;border-bottom:1px solid var(--ui1);vertical-align:top;line-h
 <!-- MOCK BANNER -->
 <div class="mock-banner">
   <i>⚡</i>
-  <span><span class="hl">MODO DEMO</span> — Datos simulados para GitHub Pages. Para usar con datos reales, ejecuta <span style="color:var(--green)">python server.py</span> localmente.</span>
+  <span><span class="hl">MODO DEMO</span> — Datos simulados para GitHub Pages.</span>
 </div>
 
 <!-- PERIOD BAR -->
@@ -300,7 +582,7 @@ td{padding:9px 13px;border-bottom:1px solid var(--ui1);vertical-align:top;line-h
 
 <script>
 // ═══════════════════════════════════════════════════════════
-// MOCK DATA — Estructura idéntica a la API
+// MOCK DATA
 // ═══════════════════════════════════════════════════════════
 
 const MOCK_DATA = {
@@ -501,17 +783,10 @@ let t2SC=-1, t2SA=true;
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
-window.addEventListener("DOMContentLoaded", async () => {
-  const params = new URLSearchParams(location.search);
-  const qdia   = params.get("dia");
-  await loadDiaList();
-  if (qdia && document.getElementById("day-select").querySelector(`option[value="${qdia}"]`)) {
-    document.getElementById("day-select").value = qdia;
-    await loadDay(qdia);
-  } else {
-    const first = document.getElementById("day-select").value;
-    if (first) await loadDay(first);
-  }
+window.addEventListener("DOMContentLoaded", function() {
+  loadDiaList();
+  loadDay("2026-04-30");
+  lucide.createIcons();
 });
 
 function loadDiaList() {
@@ -542,7 +817,6 @@ function loadDay(dia) {
   if (!dia) return;
   CUR_DIA = dia;
   DATA = JSON.parse(JSON.stringify(MOCK_DATA));
-  // Cambiar el día en los datos
   DATA.dia = dia;
   for (const u in DATA.users) {
     DATA.users[u].rows.forEach(r => r.dia = dia);
@@ -556,7 +830,6 @@ function loadRange() {
   const from = document.getElementById("r-from").value;
   const to   = document.getElementById("r-to").value;
   if (!from || !to) return;
-  // Simular rango: usar el primer día del rango
   const first = DIAS_MOCK.find(d => d >= from && d <= to);
   if (first) {
     loadDay(first);
@@ -834,7 +1107,6 @@ function openDet(u) {
   h += kv("total marcaciones", info.total);
   h += kv("total horas", fmtDur(info.total_mins),"kv-hrs");
 
-  // TIMELINE TABLE
   h += `<div class="det-sec">// detalle de marcaciones</div>`;
   const tl = info.timeline || [];
 
@@ -890,7 +1162,6 @@ function openDet(u) {
       for (const a of info.anomalias) {
         h += `<div class="anom-item">
           <span class="anom-txt">! ${esc(a.msg)}</span>
-          <span style="color:var(--tx3);font-size:11px">&#x270E;</span>
         </div>`;
       }
     }
@@ -1001,8 +1272,8 @@ function downloadCSV() {
 // ═══════════════════════════════════════════════════════════
 // KEYBOARD
 // ═══════════════════════════════════════════════════════════
-document.addEventListener("keydown", e=>{
-  if (e.key==="Escape") closeDet();
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") closeDet();
 });
 </script>
 </body>
